@@ -144,6 +144,28 @@ Plots.plot!((bureta,pH_list), title= "Curva de pH", legend =false)
 			#pH_list[i] == (pH_list[i-1]+pH_list[i+1])/2
 #end
 
+# ╔═╡ a6f6bacb-f8c3-4bca-9b85-964afb90f662
+md"""
+Indicadores:
+"""
+
+# ╔═╡ 537ea4b1-8cd1-4897-97be-a859d6519b68
+@bind ind Select(["fft", "hltn"])
+
+# ╔═╡ fa23cbc4-f155-4a9d-ba7e-666d8b911652
+begin
+	p1 = scatter(bureta,pH_list, title = "Curva de pH", label = ["pH" "pH"], xlabel = "ml NaOH", ylabel = "pH", legend = false);
+	if ind == "fft"
+		y1 = 10
+		y2= 8
+	elseif ind == "hltn"
+		y1 = 5
+		y2 = 3
+	end
+	hline!(p1,[y1]);
+	hline!(p1,[y2])
+end
+
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
 [deps]
@@ -1095,8 +1117,8 @@ version = "0.9.1+5"
 # ╟─18d6f3bc-f18e-4e40-9aa4-92d25bb467f6
 # ╟─60bc58bb-7c95-484b-a69e-3de41f022f97
 # ╟─60457c24-18e8-47d7-bd4f-1c21e8df883c
-# ╠═a73092ac-1e78-4a25-a25c-f4db8f4bce62
-# ╠═4ec4df4b-b44d-474c-92ef-4e4cd1cd375f
+# ╟─a73092ac-1e78-4a25-a25c-f4db8f4bce62
+# ╟─4ec4df4b-b44d-474c-92ef-4e4cd1cd375f
 # ╟─81034c90-049c-44b9-967b-23a5ce14ac98
 # ╟─1fe00159-7a68-4747-a2b0-8ae4fb3d911f
 # ╟─6fac53cd-9441-4c65-9c4b-a24c10449aa4
@@ -1108,5 +1130,8 @@ version = "0.9.1+5"
 # ╟─ab6a95fe-05ff-48f4-a75f-7ae31e2862c5
 # ╟─445a3f83-f82b-4175-a85c-f84c3bb09d3a
 # ╟─3d7010d3-3ced-4fe6-bcce-01e41d656c57
+# ╟─a6f6bacb-f8c3-4bca-9b85-964afb90f662
+# ╟─537ea4b1-8cd1-4897-97be-a859d6519b68
+# ╟─fa23cbc4-f155-4a9d-ba7e-666d8b911652
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
