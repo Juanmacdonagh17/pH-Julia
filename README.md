@@ -7,5 +7,7 @@ Por ahora: Graficador funcional. Ciertas combinaciones de Vol / Con causan error
 To do: 
 1) Evitar errores con pares M/ml
 2) Programar HH (parés débiles)
-3) Rango de posibles indicadores (prototipo ATP, colores de viraje agregado!)
-4) Experimentar saltos de volumenes en la bureta 
+3) Agregar expliación HH
+4) Rango de posibles indicadores (prototipo ATP, colores de viraje agregado!)
+5) Experimentar saltos de volumenes en la bureta 
+
