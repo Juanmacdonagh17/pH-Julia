@@ -112,6 +112,7 @@ end
 
 # ╔═╡ 8f64a5cd-c290-4972-8714-f914d730f700
 begin
+	#ej de error datos 20 20 1 1, BoundsError: attempt to access 96-element Vector{Any} at index [97]. Ahí va generando la lista, agarra el -inf, va al if de abajo, como no tiene generado el siguiente dato, tira ese error.
 	mol_HCL = (y*x)/1000
 	con_NaOH = z
 	pH_list = []
@@ -150,20 +151,25 @@ Indicadores:
 """
 
 # ╔═╡ 537ea4b1-8cd1-4897-97be-a859d6519b68
-@bind ind Select(["fft", "hltn"])
+@bind ind Select(["Fenolftaleína", "Naranja de metilo"])
 
 # ╔═╡ fa23cbc4-f155-4a9d-ba7e-666d8b911652
 begin
 	p1 = scatter(bureta,pH_list, title = "Curva de pH", label = ["pH" "pH"], xlabel = "ml NaOH", ylabel = "pH", legend = false);
-	if ind == "fft"
+	#esto lo debería armar de una forma más tidy, un dicc por ahí?
+	if ind == "Fenolftaleína"
 		y1 = 10
-		y2= 8
-	elseif ind == "hltn"
-		y1 = 5
-		y2 = 3
+		c1 = :pink
+		y2= 8.2
+		c2 = :whitesmoke
+	elseif ind == "Naranja de metilo"
+		y1 = 4,4
+		c1 = :red
+		y2 = 3.1
+		c2 = :yellow
 	end
-	hline!(p1,[y1]);
-	hline!(p1,[y2])
+	hline!(p1,[y1], color = c1, width = 2);
+	hline!(p1,[y2], color = c2, width = 2)
 end
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
@@ -1131,7 +1137,7 @@ version = "0.9.1+5"
 # ╟─445a3f83-f82b-4175-a85c-f84c3bb09d3a
 # ╟─3d7010d3-3ced-4fe6-bcce-01e41d656c57
 # ╟─a6f6bacb-f8c3-4bca-9b85-964afb90f662
-# ╟─537ea4b1-8cd1-4897-97be-a859d6519b68
-# ╟─fa23cbc4-f155-4a9d-ba7e-666d8b911652
+# ╠═537ea4b1-8cd1-4897-97be-a859d6519b68
+# ╠═fa23cbc4-f155-4a9d-ba7e-666d8b911652
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
