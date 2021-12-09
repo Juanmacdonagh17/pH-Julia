@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.16.4
+# v0.17.1
 
 using Markdown
 using InteractiveUtils
@@ -7,8 +7,9 @@ using InteractiveUtils
 # This Pluto notebook uses @bind for interactivity. When running this notebook outside of Pluto, the following 'mock version' of @bind gives bound variables a default value (instead of an error).
 macro bind(def, element)
     quote
+        local iv = try Base.loaded_modules[Base.PkgId(Base.UUID("6e696c72-6542-2067-7265-42206c756150"), "AbstractPlutoDingetjes")].Bonds.initial_value catch; b -> missing; end
         local el = $(esc(element))
-        global $(esc(def)) = Core.applicable(Base.get, el) ? Base.get(el) : missing
+        global $(esc(def)) = Core.applicable(Base.get, el) ? Base.get(el) : iv(el)
         el
     end
 end
@@ -20,7 +21,7 @@ using PlutoUI
 begin
 	using Plots
 	plotly()
-end
+end;
 
 # ╔═╡ a9aa8b20-48a6-11ec-037f-e1686702dd38
 md"""
@@ -31,11 +32,6 @@ md"""
 md"""
 $\require{mhchem}$
 $\require{relsize}$
-"""
-
-# ╔═╡ 059c20d0-181d-414c-be4b-d5ab4144aa3b
-md"""
-Paquetes:
 """
 
 # ╔═╡ 4ec4df4b-b44d-474c-92ef-4e4cd1cd375f
@@ -165,20 +161,24 @@ Indicadores:
 """
 
 # ╔═╡ 537ea4b1-8cd1-4897-97be-a859d6519b68
-@bind ind Select(["fft", "hltn"])
+@bind ind Select(["Fenolftaleína", "Naranja de metilo"])
 
 # ╔═╡ fa23cbc4-f155-4a9d-ba7e-666d8b911652
 begin
 	p1 = scatter(bureta,pH_list, title = "Curva de pH", label = ["pH" "pH"], xlabel = "ml NaOH", ylabel = "pH", legend = false);
-	if ind == "fft"
+	if ind == "Fenolftaleína"
 		y1 = 10
-		y2= 8
-	elseif ind == "hltn"
-		y1 = 5
-		y2 = 3
+		y2= 8.2
+		c1 = :pink
+		c2 = :whitesmoke
+	elseif ind == "Naranja de metilo"
+		y1 = 4.4 
+		y2 = 3.1
+		c1 = :red
+		c2 = :yellow
 	end
-	hline!(p1,[y1]);
-	hline!(p1,[y2])
+	hline!(p1,[y1], color = c1, width = 2);
+	hline!(p1,[y2], color = c2, width = 2)
 end
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
@@ -1073,9 +1073,8 @@ version = "0.9.1+5"
 # ╔═╡ Cell order:
 # ╟─a9aa8b20-48a6-11ec-037f-e1686702dd38
 # ╟─78375034-5f6b-4055-a373-fe40106764b9
-# ╠═059c20d0-181d-414c-be4b-d5ab4144aa3b
-# ╠═18d6f3bc-f18e-4e40-9aa4-92d25bb467f6
-# ╠═60bc58bb-7c95-484b-a69e-3de41f022f97
+# ╟─18d6f3bc-f18e-4e40-9aa4-92d25bb467f6
+# ╟─60bc58bb-7c95-484b-a69e-3de41f022f97
 # ╟─4ec4df4b-b44d-474c-92ef-4e4cd1cd375f
 # ╟─81034c90-049c-44b9-967b-23a5ce14ac98
 # ╟─1fe00159-7a68-4747-a2b0-8ae4fb3d911f
@@ -1089,7 +1088,7 @@ version = "0.9.1+5"
 # ╟─445a3f83-f82b-4175-a85c-f84c3bb09d3a
 # ╟─3d7010d3-3ced-4fe6-bcce-01e41d656c57
 # ╟─a6f6bacb-f8c3-4bca-9b85-964afb90f662
-# ╟─537ea4b1-8cd1-4897-97be-a859d6519b68
+# ╠═537ea4b1-8cd1-4897-97be-a859d6519b68
 # ╟─fa23cbc4-f155-4a9d-ba7e-666d8b911652
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
