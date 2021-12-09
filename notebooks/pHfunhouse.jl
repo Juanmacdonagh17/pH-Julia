@@ -27,6 +27,12 @@ md"""
 # Curva de titulación Ácido-Base en Julia: 💻
 """
 
+# ╔═╡ 78375034-5f6b-4055-a373-fe40106764b9
+md"""
+$\require{mhchem}$
+$\require{relsize}$
+"""
+
 # ╔═╡ 059c20d0-181d-414c-be4b-d5ab4144aa3b
 md"""
 Paquetes:
@@ -42,17 +48,35 @@ md"""
 
 # ╔═╡ 1fe00159-7a68-4747-a2b0-8ae4fb3d911f
 md"""
-Para graficas hay que tratar al pH como una funcion del volumen de Base:\
-$$$pH(Vol_{NaOH})$$$\
-\
-Recordemos como se define el pH: $$pH=-  \log{([H^+])}$$\
-Por cada gota de base que agregamos, modificamos la concentracion de protones por la siguiente reaccion: $$$H^+ +{OH}^- ->H_2O$$$\
-Entonces, en el momento 0, cuando no hay ninguna gota de base, el pH inicial se calcula como: $$$pH_{V_0} = -\log{[H^{+}_{i}]}$$$\
-Pero al agregar la primer gota de Base, este se modifica de la siguiente manera:\
-$$$pH_{V_1}=-\log{(\frac{(\text{moles }H^{+}_{0}- \text{ moles }{OH}^-_{1})*(V_i+V_{1\text{NaOH}})}{1000\text{ml}})}$$$\
-En esta ecuacion le restamos a los moles *iniciales* (en el punto anterior) debido a que modifican las concentraciones.\
-De forma general, podemos expresar la función de la siguiente manera:\
-$$$pH_{V_x}=-\log{(\frac{(\text{moles }H^{+}_{x-1}-\text{moles }{OH}^-_{1})*(V_{x-1}+V_{x(\text{NaOH})})}{1000\text{ml}})}$$$\
+Para graficas hay que tratar al pH como una funcion del volumen de Base:
+
+$$\text{pH} (\text{Vol}_{\ce{NaOH}})$$
+
+Recordemos como se define el pH: 
+
+$$\text{pH}=-  \log{([H^+])}$$
+
+Por cada gota de base que agregamos, modificamos la concentracion de protones por la siguiente reaccion: 
+
+$$\ce{H+ +OH- <=>H2O}$$
+
+Entonces, en el momento 0, cuando no hay ninguna gota de base, el pH inicial se calcula como: 
+
+$$\text{pH}_{V_0} = -\log{[H^+_i]}$$
+
+
+Pero al agregar la primer gota de Base, este se modifica de la siguiente manera:
+
+
+$$\text{pH}_{V_1}=-\log{\Bigg(\dfrac{(\text{moles }H^{+}_{0}- \text{ moles }{OH}^-_{1})*(V_i+V_{1\text{NaOH}})}{1000\text{ml}}\Bigg)}$$
+
+
+En esta ecuacion le restamos a los moles *iniciales* (en el punto anterior) debido a que modifican las concentraciones.
+
+De forma general, podemos expresar la función de la siguiente manera:
+
+$$\text{pH}_{V_x}=-\log{\Bigg(\dfrac{(\text{moles }H^{+}_{x-1}-\text{moles }{OH}^-_{1})*(V_{x-1}+V_{x(\text{NaOH})})}{1000\text{ml}}\Bigg)}$$
+
 Con esto ya tenemos (casi) todo lo necesario para armar nuestra función. Los parametros a usar van a ser (para titular ácidos y bases fuertes!):\
 
 1) Concentración inicial de Ácido
@@ -1048,6 +1072,7 @@ version = "0.9.1+5"
 
 # ╔═╡ Cell order:
 # ╟─a9aa8b20-48a6-11ec-037f-e1686702dd38
+# ╟─78375034-5f6b-4055-a373-fe40106764b9
 # ╠═059c20d0-181d-414c-be4b-d5ab4144aa3b
 # ╠═18d6f3bc-f18e-4e40-9aa4-92d25bb467f6
 # ╠═60bc58bb-7c95-484b-a69e-3de41f022f97
