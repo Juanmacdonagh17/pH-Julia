@@ -10,4 +10,7 @@ To do:
 3) Agregar expliación HH
 4) Rango de posibles indicadores (prototipo ATP, colores de viraje agregado!)
 5) Experimentar saltos de volumenes en la bureta 
+6) Modificar slider bureta 
+7) Estructura de datos ind (JSON/ dict)
+8) Poner lindo el readme
 
