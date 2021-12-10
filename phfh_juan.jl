@@ -106,112 +106,6 @@ Concentración molar del Ácido: $(@bind y Slider(0.1: 0.05 :1, show_value = tru
 Concentración molar de la Base: $(@bind z Slider(0.1: 0.05 :1, show_value = true))\
 """
 
-# ╔═╡ e803cbfc-b47c-4168-9ca7-19656e7f7202
-begin
-	bureta = collect(1:0.2:w)
-	erlen = x
-	erlen_t = []
-	for i in range(1,length=length(bureta))
-		if i == 1
-			append!(erlen_t,erlen+(bureta[i]))
-		else
-			append!(erlen_t,(erlen+bureta[i]))
-		end
-	end
-end
-
-# ╔═╡ 8f64a5cd-c290-4972-8714-f914d730f700
-begin
-	mol_HCL = (y*x)/1000
-	con_NaOH = z
-	pH_list = []
-	con_list = []
-	for i in range(1,length=length(bureta))
-		append!(con_list,(((mol_HCL-((con_NaOH*bureta[i])/1000))*(1000))/erlen_t[i]))
-		if con_list[i] > 0
-			append!(pH_list,(-log10(con_list[i])))
-		else  
-			append!(pH_list,(14+log10(-con_list[i])))
-		end
-	end
-	for i in range(1,length=length(pH_list))
-		if pH_list[i] == -Inf
-			pH_list_lie = replace(pH_list,pH_list[i] =>(pH_list[i-1]+pH_list[i+1])/2)
-			#pH_list[i] == (pH_list[i-1]+pH_list[i+1])/2
-		end
-	end
-end
-
-# ╔═╡ ab6a95fe-05ff-48f4-a75f-7ae31e2862c5
-scatter(bureta,pH_list, title = "Curva de pH", label = ["pH" "pH"], xlabel = "ml NaOH", ylabel = "pH", legend = false, mode="lines");
-
-# ╔═╡ 445a3f83-f82b-4175-a85c-f84c3bb09d3a
-Plots.plot!((bureta,pH_list), title= "Curva de pH", legend =false)
-
-# ╔═╡ 3d7010d3-3ced-4fe6-bcce-01e41d656c57
-#if pH_list[46] == -Inf
-	#a = replace(pH_list,pH_list[46] =>(pH_list[46-1]+pH_list[46+1])/2)
-			#pH_list[i] == (pH_list[i-1]+pH_list[i+1])/2
-#end
-
-# ╔═╡ a6f6bacb-f8c3-4bca-9b85-964afb90f662
-md"""
-Indicadores:
-"""
-
-# ╔═╡ 537ea4b1-8cd1-4897-97be-a859d6519b68
-@bind ind Select(["Fenolftaleína", "Naranja de metilo","Alizarina","Rojo de cresol","Violeta de metilo"])
-
-# ╔═╡ 43bc566e-13df-4bdf-9933-ae8abf2eda56
-
-
-# ╔═╡ 1cc940f7-c4a9-4ccc-8c40-94b6694e7fa0
-md"""
-#### Los datos de los indicadores se pueden ocultar de alguna forma más elegante 
-"""
-
-# ╔═╡ c05192ea-46d5-4a4d-8d7b-aabd5035c241
-Indicadores=Dict(
-	"Fenolftaleína"=>
-Dict(
-		:viraje=> [10,8.2],
-		:colores=>[:pink,:whitesmoke]
-),
-	"Naranja de metilo"=>
-	Dict(
-		:viraje=>[4.4,3.1],
-		:colores=>[:red,:yellow]
-	),
-	"Alizarina"=>
-	Dict(
-		:viraje=>[12.4,11],
-		:colores=>[:red,:yellow]
-	),
-	"Rojo de cresol"=>
-	Dict(
-		:viraje=>[8.8,7],
-		:colores=>[:yellow,:red]
-	),
-	"Violeta de metilo"=>
-	Dict(
-		:viraje=>[1.6,.2],
-		:colores=>[:blueviolet,:yellow]
-		)
-)
-
-
-# ╔═╡ e7a769e6-7cbd-4aa3-af4f-eea1dbb34d45
-begin
-	indicador=Indicadores[ind];
-	p2 = scatter(bureta,pH_list, title = "Curva de pH", label = ["pH" "pH"], xlabel = "ml NaOH", ylabel = "pH", legend = false);
-	
-	hline!(p2,[indicador[:viraje][1]], color = indicador[:colores][1], width = 2);
-	hline!(p2,[indicador[:viraje][2]], color = indicador[:colores][2], width = 2)
-end
-
-# ╔═╡ c613f18b-ce91-478d-b8f7-858934f5f932
-
-
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
 [deps]
@@ -219,8 +113,8 @@ Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
 
 [compat]
-Plots = "~1.23.6"
-PlutoUI = "~0.7.21"
+Plots = "~1.25.2"
+PlutoUI = "~0.7.22"
 """
 
 # ╔═╡ 00000000-0000-0000-0000-000000000002
@@ -262,15 +156,15 @@ version = "1.16.1+0"
 
 [[ChainRulesCore]]
 deps = ["Compat", "LinearAlgebra", "SparseArrays"]
-git-tree-sha1 = "f885e7e7c124f8c92650d61b9477b9ac2ee607dd"
+git-tree-sha1 = "4c26b4e9e91ca528ea212927326ece5918a04b47"
 uuid = "d360d2e6-b24c-11e9-a2a3-2a2ae2dbcce4"
-version = "1.11.1"
+version = "1.11.2"
 
 [[ChangesOfVariables]]
-deps = ["LinearAlgebra", "Test"]
-git-tree-sha1 = "9a1d594397670492219635b35a3d830b04730d62"
+deps = ["ChainRulesCore", "LinearAlgebra", "Test"]
+git-tree-sha1 = "bf98fa45a0a4cee295de98d4c1462be26345b9a1"
 uuid = "9e997f8a-9a97-42d5-a9f1-ce6bfc15e2c0"
-version = "0.1.1"
+version = "0.1.2"
 
 [[ColorSchemes]]
 deps = ["ColorTypes", "Colors", "FixedPointNumbers", "Random"]
@@ -313,9 +207,9 @@ version = "1.9.0"
 
 [[DataStructures]]
 deps = ["Compat", "InteractiveUtils", "OrderedCollections"]
-git-tree-sha1 = "7d9d316f04214f7efdbb6398d545446e246eff02"
+git-tree-sha1 = "3daef5523dd2e769dad2365274f760ff5f282c7d"
 uuid = "864edb3b-99cc-5e75-8d2d-829cb0a9cfe8"
-version = "0.18.10"
+version = "0.18.11"
 
 [[DataValueInterfaces]]
 git-tree-sha1 = "bfc1187b79289637fa0ef6d4436ebdfe6905cbd6"
@@ -496,9 +390,9 @@ uuid = "92d709cd-6900-40b7-9082-c6be49f344b6"
 version = "0.1.1"
 
 [[IterTools]]
-git-tree-sha1 = "05110a2ab1fc5f932622ffea2a003221f4782c18"
+git-tree-sha1 = "fa6287a4469f5e048d763df38279ee729fbd44e5"
 uuid = "c8e1da08-722c-5040-9ed9-7db0dc04731e"
-version = "1.3.0"
+version = "1.4.0"
 
 [[IteratorInterfaceExtensions]]
 git-tree-sha1 = "a3f24677c21f5bbe9d2a714f95dcd58337fb2856"
@@ -730,15 +624,15 @@ version = "1.0.15"
 
 [[Plots]]
 deps = ["Base64", "Contour", "Dates", "Downloads", "FFMPEG", "FixedPointNumbers", "GR", "GeometryBasics", "JSON", "Latexify", "LinearAlgebra", "Measures", "NaNMath", "PlotThemes", "PlotUtils", "Printf", "REPL", "Random", "RecipesBase", "RecipesPipeline", "Reexport", "Requires", "Scratch", "Showoff", "SparseArrays", "Statistics", "StatsBase", "UUIDs", "UnicodeFun"]
-git-tree-sha1 = "0d185e8c33401084cab546a756b387b15f76720c"
+git-tree-sha1 = "65ebc27d8c00c84276f14aaf4ff63cbe12016c70"
 uuid = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
-version = "1.23.6"
+version = "1.25.2"
 
 [[PlutoUI]]
 deps = ["AbstractPlutoDingetjes", "Base64", "Dates", "Hyperscript", "HypertextLiteral", "IOCapture", "InteractiveUtils", "JSON", "Logging", "Markdown", "Random", "Reexport", "UUIDs"]
-git-tree-sha1 = "b68904528fd538f1cb6a3fbc44d2abdc498f9e8e"
+git-tree-sha1 = "565564f615ba8c4e4f40f5d29784aa50a8f7bbaf"
 uuid = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
-version = "0.7.21"
+version = "0.7.22"
 
 [[Preferences]]
 deps = ["TOML"]
@@ -765,9 +659,9 @@ deps = ["Serialization"]
 uuid = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 
 [[RecipesBase]]
-git-tree-sha1 = "44a75aa7a527910ee3d1751d1f0e4148698add9e"
+git-tree-sha1 = "6bf3f380ff52ce0832ddd3a2a7b9538ed1bcca7d"
 uuid = "3cdcf5f2-1ef4-517c-9805-6587b60abb01"
-version = "1.1.2"
+version = "1.2.1"
 
 [[RecipesPipeline]]
 deps = ["Dates", "NaNMath", "PlotUtils", "RecipesBase"]
@@ -832,15 +726,15 @@ deps = ["LinearAlgebra", "SparseArrays"]
 uuid = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 
 [[StatsAPI]]
-git-tree-sha1 = "1958272568dc176a1d881acb797beb909c785510"
+git-tree-sha1 = "0f2aa8e32d511f758a2ce49208181f7733a0936a"
 uuid = "82ae8749-77ed-4fe6-ae5f-f523153014b0"
-version = "1.0.0"
+version = "1.1.0"
 
 [[StatsBase]]
 deps = ["DataAPI", "DataStructures", "LinearAlgebra", "LogExpFunctions", "Missings", "Printf", "Random", "SortingAlgorithms", "SparseArrays", "Statistics", "StatsAPI"]
-git-tree-sha1 = "eb35dcc66558b2dda84079b9a1be17557d32091a"
+git-tree-sha1 = "2bb0cb32026a66037360606510fca5984ccc6b75"
 uuid = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
-version = "0.33.12"
+version = "0.33.13"
 
 [[StructArrays]]
 deps = ["Adapt", "DataAPI", "StaticArrays", "Tables"]
@@ -897,10 +791,10 @@ uuid = "a2964d1f-97da-50d4-b82a-358c7fce9d89"
 version = "1.19.0+0"
 
 [[Wayland_protocols_jll]]
-deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg", "Wayland_jll"]
-git-tree-sha1 = "2839f1c1296940218e35df0bbb220f2a79686670"
+deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
+git-tree-sha1 = "66d72dc6fcc86352f01676e8f0f698562e60510f"
 uuid = "2381bf8a-dfd0-557d-9999-79630e7b1b91"
-version = "1.18.0+4"
+version = "1.23.0+0"
 
 [[XML2_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Libiconv_jll", "Pkg", "Zlib_jll"]
@@ -1109,21 +1003,9 @@ version = "0.9.1+5"
 # ╟─4ec4df4b-b44d-474c-92ef-4e4cd1cd375f
 # ╟─81034c90-049c-44b9-967b-23a5ce14ac98
 # ╟─1fe00159-7a68-4747-a2b0-8ae4fb3d911f
-# ╟─6fac53cd-9441-4c65-9c4b-a24c10449aa4
-# ╟─af14eab0-655e-425b-a483-dc63fc501045
-# ╟─8b512d53-1a96-40f8-88d6-9caf28bbe9ef
-# ╟─1aefcb86-c78f-4bee-9205-75c2b1d972d3
-# ╠═e803cbfc-b47c-4168-9ca7-19656e7f7202
-# ╠═8f64a5cd-c290-4972-8714-f914d730f700
-# ╟─ab6a95fe-05ff-48f4-a75f-7ae31e2862c5
-# ╟─445a3f83-f82b-4175-a85c-f84c3bb09d3a
-# ╟─3d7010d3-3ced-4fe6-bcce-01e41d656c57
-# ╠═a6f6bacb-f8c3-4bca-9b85-964afb90f662
-# ╠═537ea4b1-8cd1-4897-97be-a859d6519b68
-# ╠═43bc566e-13df-4bdf-9933-ae8abf2eda56
-# ╟─1cc940f7-c4a9-4ccc-8c40-94b6694e7fa0
-# ╠═c05192ea-46d5-4a4d-8d7b-aabd5035c241
-# ╟─e7a769e6-7cbd-4aa3-af4f-eea1dbb34d45
-# ╠═c613f18b-ce91-478d-b8f7-858934f5f932
+# ╠═6fac53cd-9441-4c65-9c4b-a24c10449aa4
+# ╠═af14eab0-655e-425b-a483-dc63fc501045
+# ╠═8b512d53-1a96-40f8-88d6-9caf28bbe9ef
+# ╠═1aefcb86-c78f-4bee-9205-75c2b1d972d3
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
