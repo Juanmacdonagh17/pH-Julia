@@ -103,8 +103,8 @@ md"""
 Elegimos los valores para nuestra titulación: \
 Volumen total de la bureta (ml): $(@bind w Slider(11:50, default = 25, show_value = true))\
 Volumen de ácido a titular (ml): $(@bind x Slider(5:20, default = 10, show_value = true))\
-Concentración molar del Ácido: $(@bind y Slider(0.1: 0.1 :1, show_value = true))\
-Concentración molar de la Base: $(@bind z Slider(0.1: 0.1 :1, show_value = true))\
+Concentración molar del Ácido: $(@bind y Slider(0.1: 0.05 :1, show_value = true))\
+Concentración molar de la Base: $(@bind z Slider(0.1: 0.05 :1, show_value = true))\
 """
 
 # ╔═╡ e803cbfc-b47c-4168-9ca7-19656e7f7202
@@ -130,9 +130,9 @@ begin
 	for i in range(1,length=length(bureta))
 		append!(con_list,(((mol_HCL-((con_NaOH*bureta[i])/1000))*(1000))/erlen_t[i]))
 		if con_list[i] > 0
-			append!(pH_list,(-log(con_list[i])))
+			append!(pH_list,(-log10(con_list[i])))
 		else  
-			append!(pH_list,(14+log(-con_list[i])))
+			append!(pH_list,(14+log10(-con_list[i])))
 		end
 	end
 	for i in range(1,length=length(pH_list))
@@ -144,7 +144,7 @@ begin
 end
 
 # ╔═╡ ab6a95fe-05ff-48f4-a75f-7ae31e2862c5
-scatter(bureta,pH_list, title = "Curva de pH", label = ["pH" "pH"], xlabel = "ml NaOH", ylabel = "pH", legend = false);
+scatter(bureta,pH_list, title = "Curva de pH", label = ["pH" "pH"], xlabel = "ml NaOH", ylabel = "pH", legend = false, mode="lines");
 
 # ╔═╡ 445a3f83-f82b-4175-a85c-f84c3bb09d3a
 Plots.plot!((bureta,pH_list), title= "Curva de pH", legend =false)
@@ -161,7 +161,7 @@ Indicadores:
 """
 
 # ╔═╡ 537ea4b1-8cd1-4897-97be-a859d6519b68
-@bind ind Select(["Fenolftaleína", "Naranja de metilo"])
+@bind ind Select(["Fenolftaleína", "Naranja de metilo","Alizarina","Rojo de cresol","Violeta de metilo"])
 
 # ╔═╡ fa23cbc4-f155-4a9d-ba7e-666d8b911652
 begin
@@ -175,6 +175,21 @@ begin
 		y1 = 4.4 
 		y2 = 3.1
 		c1 = :red
+		c2 = :yellow
+	elseif ind == "Alizarina"
+		y1 = 12.4 
+		y2 = 11
+		c1 = :red
+		c2 = :yellow
+	elseif ind == "Rojo de cresol"
+		y1 = 8.8 
+		y2 = 7
+		c1 = :yellow
+		c2 = :red
+	elseif ind == "Violeta de metilo"
+		y1 = 1.6 
+		y2 = 0.2
+		c1 = :blueviolet
 		c2 = :yellow
 	end
 	hline!(p1,[y1], color = c1, width = 2);
@@ -1088,7 +1103,7 @@ version = "0.9.1+5"
 # ╟─445a3f83-f82b-4175-a85c-f84c3bb09d3a
 # ╟─3d7010d3-3ced-4fe6-bcce-01e41d656c57
 # ╟─a6f6bacb-f8c3-4bca-9b85-964afb90f662
-# ╠═537ea4b1-8cd1-4897-97be-a859d6519b68
+# ╟─537ea4b1-8cd1-4897-97be-a859d6519b68
 # ╟─fa23cbc4-f155-4a9d-ba7e-666d8b911652
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
