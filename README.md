@@ -14,11 +14,12 @@ Script básico con el objetivo de graficar (en tiempo real) titulaciones ácido-
 | Evitar errores con pares M/ml       | Pendiente     |
 | Programar HH (parés débiles)        | Pendiente     |
 | Agregar expliación HH               | Pendiente     |
-| Rango de posibles indicadores       | Terminado     |
+| Rango de posibles indicadores       | Terminado(80%)|
 | Experimentarvolumenes en la bureta  | Pendiente     |
 | Modificar slider bureta             | Pendiente     |
 | Estructura de datos ind (JSON/ dict)| Pendiente     |
 | Poner lindo el readme               | Terminado     |
+| Punto de equivalencia               | 50%           |
 
 
 
