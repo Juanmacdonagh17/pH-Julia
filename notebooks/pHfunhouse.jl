@@ -107,6 +107,12 @@ Concentración molar del Ácido: $(@bind y Slider(0.1: 0.05 :1, show_value = tru
 Concentración molar de la Base: $(@bind z Slider(0.1: 0.05 :1, show_value = true))\
 """
 
+# ╔═╡ 6f8cf5e1-ef18-49b1-93f9-ea2c5b97879c
+md"""
+Mostrar punto de equivalencia: (nada yet)\
+$(@bind eq Select(["Si", "No"]))
+"""
+
 # ╔═╡ e803cbfc-b47c-4168-9ca7-19656e7f7202
 begin
 	bureta = collect(1:0.2:w)
@@ -135,19 +141,39 @@ begin
 			append!(pH_list,(14+log10(-con_list[i])))
 		end
 	end
-	for i in range(1,length=length(pH_list))
-		if pH_list[i] == -Inf
-			pH_list_lie = replace(pH_list,pH_list[i] =>(pH_list[i-1]+pH_list[i+1])/2)
-			#pH_list[i] == (pH_list[i-1]+pH_list[i+1])/2
-		end
-	end
+	#Punto fantasma en el medio de la titulación:
+	#for i in range(1,length=length(pH_list))
+		#if pH_list[i] == -Inf
+			#pH_list_lie = replace(pH_list,pH_list[i] =>(pH_list[i-1]+pH_list[i+1])/2)
+
+		#end
+	#end
 end
 
 # ╔═╡ ab6a95fe-05ff-48f4-a75f-7ae31e2862c5
 scatter(bureta,pH_list, title = "Curva de pH", label = ["pH" "pH"], xlabel = "ml NaOH", ylabel = "pH", legend = false, mode="lines");
 
 # ╔═╡ 445a3f83-f82b-4175-a85c-f84c3bb09d3a
-Plots.plot!((bureta,pH_list), title= "Curva de pH", legend =false)
+begin 
+	Plots.plot!((bureta,pH_list), title= "Curva de pH", legend =false);
+	if last(pH_list) > 7
+		if -Inf in pH_list 
+			vol_eq = bureta[findall(isequal(-Inf), pH_list)]
+			Plots.plot!((bureta,pH_list), title= "Curva de pH", legend =false);
+			Plots.plot!((vol_eq,7), title= "Curva de pH", legend =false, markercolor = :red, markershape = :pentagon)
+			annotate!((vol_eq.+4), 7.2, "pH = 7", :color);
+		else
+			v1 = bureta[findall(isequal(last((pH_list[pH_list .< 3]))),pH_list)]
+			v2 = bureta[findall(isequal(first((pH_list[pH_list .> 3]))),pH_list)]
+			vol_eq = (v1.+v2)./2
+			Plots.plot!((bureta,pH_list), title= "Curva de pH", legend =false)
+			Plots.plot!((vol_eq,7), title= "Curva de pH", legend =false, markercolor = :red, markershape = :pentagon)
+			annotate!((vol_eq.+4), 7.2, "pH = 7", :color);
+		end
+	else
+		Plots.plot!((bureta,pH_list), title= "Curva de pH", legend =false)
+	end
+end
 
 # ╔═╡ 3d7010d3-3ced-4fe6-bcce-01e41d656c57
 #if pH_list[46] == -Inf
@@ -1097,6 +1123,7 @@ version = "0.9.1+5"
 # ╟─af14eab0-655e-425b-a483-dc63fc501045
 # ╟─8b512d53-1a96-40f8-88d6-9caf28bbe9ef
 # ╟─1aefcb86-c78f-4bee-9205-75c2b1d972d3
+# ╟─6f8cf5e1-ef18-49b1-93f9-ea2c5b97879c
 # ╟─e803cbfc-b47c-4168-9ca7-19656e7f7202
 # ╟─8f64a5cd-c290-4972-8714-f914d730f700
 # ╟─ab6a95fe-05ff-48f4-a75f-7ae31e2862c5
