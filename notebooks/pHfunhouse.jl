@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.17.1
+# v0.16.4
 
 using Markdown
 using InteractiveUtils
@@ -7,9 +7,8 @@ using InteractiveUtils
 # This Pluto notebook uses @bind for interactivity. When running this notebook outside of Pluto, the following 'mock version' of @bind gives bound variables a default value (instead of an error).
 macro bind(def, element)
     quote
-        local iv = try Base.loaded_modules[Base.PkgId(Base.UUID("6e696c72-6542-2067-7265-42206c756150"), "AbstractPlutoDingetjes")].Bonds.initial_value catch; b -> missing; end
         local el = $(esc(element))
-        global $(esc(def)) = Core.applicable(Base.get, el) ? Base.get(el) : iv(el)
+        global $(esc(def)) = Core.applicable(Base.get, el) ? Base.get(el) : missing
         el
     end
 end
@@ -163,38 +162,55 @@ Indicadores:
 # ╔═╡ 537ea4b1-8cd1-4897-97be-a859d6519b68
 @bind ind Select(["Fenolftaleína", "Naranja de metilo","Alizarina","Rojo de cresol","Violeta de metilo"])
 
-# ╔═╡ fa23cbc4-f155-4a9d-ba7e-666d8b911652
+# ╔═╡ 43bc566e-13df-4bdf-9933-ae8abf2eda56
+
+
+# ╔═╡ 1cc940f7-c4a9-4ccc-8c40-94b6694e7fa0
+md"""
+#### Los datos de los indicadores se pueden ocultar de alguna forma más elegante 
+"""
+
+# ╔═╡ c05192ea-46d5-4a4d-8d7b-aabd5035c241
+Indicadores=Dict(
+	"Fenolftaleína"=>
+Dict(
+		:viraje=> [10,8.2],
+		:colores=>[:pink,:whitesmoke]
+),
+	"Naranja de Metilo"=>
+	Dict(
+		:viraje=>[4.4,3.1],
+		:colores=>[:red,:yellow]
+	),
+	"Alizarina"=>
+	Dict(
+		:viraje=>[12.4,11],
+		:colores=>[:red,:yellow]
+	),
+	"Rojo de Cresol"=>
+	Dict(
+		:viraje=>[8.8,7],
+		:colores=>[:yellow,:red]
+	),
+	"Violeta de Metilo"=>
+	Dict(
+		:viraje=>[1.6,.2],
+		:colores=>[:blueviolet,:yellow]
+		)
+)
+
+
+# ╔═╡ e7a769e6-7cbd-4aa3-af4f-eea1dbb34d45
 begin
-	p1 = scatter(bureta,pH_list, title = "Curva de pH", label = ["pH" "pH"], xlabel = "ml NaOH", ylabel = "pH", legend = false);
-	if ind == "Fenolftaleína"
-		y1 = 10
-		y2= 8.2
-		c1 = :pink
-		c2 = :whitesmoke
-	elseif ind == "Naranja de metilo"
-		y1 = 4.4 
-		y2 = 3.1
-		c1 = :red
-		c2 = :yellow
-	elseif ind == "Alizarina"
-		y1 = 12.4 
-		y2 = 11
-		c1 = :red
-		c2 = :yellow
-	elseif ind == "Rojo de cresol"
-		y1 = 8.8 
-		y2 = 7
-		c1 = :yellow
-		c2 = :red
-	elseif ind == "Violeta de metilo"
-		y1 = 1.6 
-		y2 = 0.2
-		c1 = :blueviolet
-		c2 = :yellow
-	end
-	hline!(p1,[y1], color = c1, width = 2);
-	hline!(p1,[y2], color = c2, width = 2)
+	indicador=Indicadores[ind];
+	p2 = scatter(bureta,pH_list, title = "Curva de pH", label = ["pH" "pH"], xlabel = "ml NaOH", ylabel = "pH", legend = false);
+	
+	hline!(p2,[indicador[:viraje][1]], color = indicador[:colores][1], width = 2);
+	hline!(p2,[indicador[:viraje][2]], color = indicador[:colores][2], width = 2)
 end
+
+# ╔═╡ c613f18b-ce91-478d-b8f7-858934f5f932
+
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -1097,13 +1113,17 @@ version = "0.9.1+5"
 # ╟─af14eab0-655e-425b-a483-dc63fc501045
 # ╟─8b512d53-1a96-40f8-88d6-9caf28bbe9ef
 # ╟─1aefcb86-c78f-4bee-9205-75c2b1d972d3
-# ╟─e803cbfc-b47c-4168-9ca7-19656e7f7202
-# ╟─8f64a5cd-c290-4972-8714-f914d730f700
+# ╠═e803cbfc-b47c-4168-9ca7-19656e7f7202
+# ╠═8f64a5cd-c290-4972-8714-f914d730f700
 # ╟─ab6a95fe-05ff-48f4-a75f-7ae31e2862c5
 # ╟─445a3f83-f82b-4175-a85c-f84c3bb09d3a
 # ╟─3d7010d3-3ced-4fe6-bcce-01e41d656c57
-# ╟─a6f6bacb-f8c3-4bca-9b85-964afb90f662
-# ╟─537ea4b1-8cd1-4897-97be-a859d6519b68
-# ╟─fa23cbc4-f155-4a9d-ba7e-666d8b911652
+# ╠═a6f6bacb-f8c3-4bca-9b85-964afb90f662
+# ╠═537ea4b1-8cd1-4897-97be-a859d6519b68
+# ╠═43bc566e-13df-4bdf-9933-ae8abf2eda56
+# ╟─1cc940f7-c4a9-4ccc-8c40-94b6694e7fa0
+# ╟─c05192ea-46d5-4a4d-8d7b-aabd5035c241
+# ╟─e7a769e6-7cbd-4aa3-af4f-eea1dbb34d45
+# ╠═c613f18b-ce91-478d-b8f7-858934f5f932
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
