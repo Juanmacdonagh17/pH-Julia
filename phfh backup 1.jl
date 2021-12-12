@@ -14,7 +14,7 @@ macro bind(def, element)
 end
 
 # ╔═╡ 18d6f3bc-f18e-4e40-9aa4-92d25bb467f6
-using PlutoUI, LaTeXStrings
+using PlutoUI
 
 # ╔═╡ 60bc58bb-7c95-484b-a69e-3de41f022f97
 begin
@@ -90,36 +90,6 @@ md"""
 #
 """
 
-# ╔═╡ c05192ea-46d5-4a4d-8d7b-aabd5035c241
-Indicadores=Dict(
-	"Fenolftaleína"=>
-Dict(
-		:viraje=> [10,8.2],
-		:colores=>[:pink,:whitesmoke]
-),
-	"Naranja de metilo"=>
-	Dict(
-		:viraje=>[4.4,3.1],
-		:colores=>[:red,:yellow]
-	),
-	"Alizarina"=>
-	Dict(
-		:viraje=>[12.4,11],
-		:colores=>[:red,:yellow]
-	),
-	"Rojo de cresol"=>
-	Dict(
-		:viraje=>[8.8,7],
-		:colores=>[:yellow,:red]
-	),
-	"Violeta de metilo"=>
-	Dict(
-		:viraje=>[1.6,.2],
-		:colores=>[:blueviolet,:yellow]
-		)
-);
-
-
 # ╔═╡ 8b512d53-1a96-40f8-88d6-9caf28bbe9ef
 md"""
 Sustancias a usar (esto no hace nada todavía):\
@@ -134,6 +104,12 @@ Volumen total de la bureta (ml): $(@bind w Slider(11:50, default = 25, show_valu
 Volumen de ácido a titular (ml): $(@bind x Slider(5:20, default = 10, show_value = true))\
 Concentración molar del Ácido: $(@bind y Slider(0.1: 0.05 :1, show_value = true))\
 Concentración molar de la Base: $(@bind z Slider(0.1: 0.05 :1, show_value = true))\
+"""
+
+# ╔═╡ 6f8cf5e1-ef18-49b1-93f9-ea2c5b97879c
+md"""
+Mostrar punto de equivalencia: (nada yet)\
+$(@bind eq Select(["Si", "No"]))
 """
 
 # ╔═╡ e803cbfc-b47c-4168-9ca7-19656e7f7202
@@ -164,20 +140,39 @@ begin
 			append!(pH_list,(14+log10(-con_list[i])))
 		end
 	end
-	for i in range(1,length=length(pH_list))
-		if pH_list[i] == -Inf
-			pH_list_lie = replace(pH_list,pH_list[i] =>(pH_list[i-1]+pH_list[i+1])/2)
-			#pH_list[i] == (pH_list[i-1]+pH_list[i+1])/2
-		end
-	end
+	#Punto fantasma en el medio de la titulación:
+	#for i in range(1,length=length(pH_list))
+		#if pH_list[i] == -Inf
+			#pH_list_lie = replace(pH_list,pH_list[i] =>(pH_list[i-1]+pH_list[i+1])/2)
+
+		#end
+	#end
 end
 
 # ╔═╡ ab6a95fe-05ff-48f4-a75f-7ae31e2862c5
 scatter(bureta,pH_list, title = "Curva de pH", label = ["pH" "pH"], xlabel = "ml NaOH", ylabel = "pH", legend = false, mode="lines");
 
 # ╔═╡ 445a3f83-f82b-4175-a85c-f84c3bb09d3a
-
-Plots.plot!((bureta,pH_list), title= "Curva de pH", legend =false)	
+begin 
+	Plots.plot!((bureta,pH_list), title= "Curva de pH", legend =false);
+	if last(pH_list) > 7
+		if -Inf in pH_list 
+			vol_eq = bureta[findall(isequal(-Inf), pH_list)]
+			Plots.plot!((bureta,pH_list), title= "Curva de pH", legend =false);
+			Plots.plot!((vol_eq,7), title= "Curva de pH", legend =false, markercolor = :red, markershape = :pentagon)
+			annotate!((vol_eq.+4), 7.2, "pH = 7", :color);
+		else
+			v1 = bureta[findall(isequal(last((pH_list[pH_list .< 3]))),pH_list)]
+			v2 = bureta[findall(isequal(first((pH_list[pH_list .> 3]))),pH_list)]
+			vol_eq = (v1.+v2)./2
+			Plots.plot!((bureta,pH_list), title= "Curva de pH", legend =false)
+			Plots.plot!((vol_eq,7), title= "Curva de pH", legend =false, markercolor = :red, markershape = :pentagon)
+			annotate!((vol_eq.+4), 7.2, "pH = 7", :color);
+		end
+	else
+		Plots.plot!((bureta,pH_list), title= "Curva de pH", legend =false)
+	end
+end
 
 # ╔═╡ 3d7010d3-3ced-4fe6-bcce-01e41d656c57
 #if pH_list[46] == -Inf
@@ -191,7 +186,45 @@ Indicadores:
 """
 
 # ╔═╡ 537ea4b1-8cd1-4897-97be-a859d6519b68
-@bind ind Select(collect(keys(Indicadores)))
+@bind ind Select(["Fenolftaleína", "Naranja de metilo","Alizarina","Rojo de cresol","Violeta de metilo"])
+
+# ╔═╡ 43bc566e-13df-4bdf-9933-ae8abf2eda56
+
+
+# ╔═╡ 1cc940f7-c4a9-4ccc-8c40-94b6694e7fa0
+md"""
+#### Los datos de los indicadores se pueden ocultar de alguna forma más elegante 
+"""
+
+# ╔═╡ c05192ea-46d5-4a4d-8d7b-aabd5035c241
+Indicadores=Dict(
+	"Fenolftaleína"=>
+Dict(
+		:viraje=> [10,8.2],
+		:colores=>[:pink,:whitesmoke]
+),
+	"Naranja de Metilo"=>
+	Dict(
+		:viraje=>[4.4,3.1],
+		:colores=>[:red,:yellow]
+	),
+	"Alizarina"=>
+	Dict(
+		:viraje=>[12.4,11],
+		:colores=>[:red,:yellow]
+	),
+	"Rojo de Cresol"=>
+	Dict(
+		:viraje=>[8.8,7],
+		:colores=>[:yellow,:red]
+	),
+	"Violeta de Metilo"=>
+	Dict(
+		:viraje=>[1.6,.2],
+		:colores=>[:blueviolet,:yellow]
+		)
+)
+
 
 # ╔═╡ e7a769e6-7cbd-4aa3-af4f-eea1dbb34d45
 begin
@@ -202,15 +235,16 @@ begin
 	hline!(p2,[indicador[:viraje][2]], color = indicador[:colores][2], width = 2)
 end
 
+# ╔═╡ c613f18b-ce91-478d-b8f7-858934f5f932
+
+
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
 [deps]
-LaTeXStrings = "b964fa9f-0449-5b57-a5c2-d3ea65f4040f"
 Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
 
 [compat]
-LaTeXStrings = "~1.3.0"
 Plots = "~1.23.6"
 PlutoUI = "~0.7.21"
 """
@@ -1096,23 +1130,32 @@ version = "0.9.1+5"
 # ╔═╡ Cell order:
 # ╟─a9aa8b20-48a6-11ec-037f-e1686702dd38
 # ╟─78375034-5f6b-4055-a373-fe40106764b9
-# ╠═18d6f3bc-f18e-4e40-9aa4-92d25bb467f6
-# ╠═60bc58bb-7c95-484b-a69e-3de41f022f97
+# ╟─18d6f3bc-f18e-4e40-9aa4-92d25bb467f6
+# ╟─60bc58bb-7c95-484b-a69e-3de41f022f97
 # ╟─4ec4df4b-b44d-474c-92ef-4e4cd1cd375f
 # ╟─81034c90-049c-44b9-967b-23a5ce14ac98
 # ╟─1fe00159-7a68-4747-a2b0-8ae4fb3d911f
 # ╟─6fac53cd-9441-4c65-9c4b-a24c10449aa4
 # ╟─af14eab0-655e-425b-a483-dc63fc501045
-# ╟─c05192ea-46d5-4a4d-8d7b-aabd5035c241
 # ╟─8b512d53-1a96-40f8-88d6-9caf28bbe9ef
 # ╟─1aefcb86-c78f-4bee-9205-75c2b1d972d3
+<<<<<<< HEAD
+# ╟─6f8cf5e1-ef18-49b1-93f9-ea2c5b97879c
+# ╟─e803cbfc-b47c-4168-9ca7-19656e7f7202
+# ╟─8f64a5cd-c290-4972-8714-f914d730f700
+=======
 # ╠═e803cbfc-b47c-4168-9ca7-19656e7f7202
 # ╠═8f64a5cd-c290-4972-8714-f914d730f700
+>>>>>>> f608a98287a1017c593920e53ee0d44f75998cce
 # ╟─ab6a95fe-05ff-48f4-a75f-7ae31e2862c5
-# ╠═445a3f83-f82b-4175-a85c-f84c3bb09d3a
-# ╠═3d7010d3-3ced-4fe6-bcce-01e41d656c57
-# ╟─a6f6bacb-f8c3-4bca-9b85-964afb90f662
-# ╟─537ea4b1-8cd1-4897-97be-a859d6519b68
+# ╟─445a3f83-f82b-4175-a85c-f84c3bb09d3a
+# ╟─3d7010d3-3ced-4fe6-bcce-01e41d656c57
+# ╠═a6f6bacb-f8c3-4bca-9b85-964afb90f662
+# ╠═537ea4b1-8cd1-4897-97be-a859d6519b68
+# ╠═43bc566e-13df-4bdf-9933-ae8abf2eda56
+# ╟─1cc940f7-c4a9-4ccc-8c40-94b6694e7fa0
+# ╟─c05192ea-46d5-4a4d-8d7b-aabd5035c241
 # ╟─e7a769e6-7cbd-4aa3-af4f-eea1dbb34d45
+# ╠═c613f18b-ce91-478d-b8f7-858934f5f932
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
