@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.16.4
+# v0.17.1
 
 using Markdown
 using InteractiveUtils
@@ -7,8 +7,9 @@ using InteractiveUtils
 # This Pluto notebook uses @bind for interactivity. When running this notebook outside of Pluto, the following 'mock version' of @bind gives bound variables a default value (instead of an error).
 macro bind(def, element)
     quote
+        local iv = try Base.loaded_modules[Base.PkgId(Base.UUID("6e696c72-6542-2067-7265-42206c756150"), "AbstractPlutoDingetjes")].Bonds.initial_value catch; b -> missing; end
         local el = $(esc(element))
-        global $(esc(def)) = Core.applicable(Base.get, el) ? Base.get(el) : missing
+        global $(esc(def)) = Core.applicable(Base.get, el) ? Base.get(el) : iv(el)
         el
     end
 end
@@ -164,20 +165,38 @@ begin
 			append!(pH_list,(14+log10(-con_list[i])))
 		end
 	end
-	for i in range(1,length=length(pH_list))
-		if pH_list[i] == -Inf
-			pH_list_lie = replace(pH_list,pH_list[i] =>(pH_list[i-1]+pH_list[i+1])/2)
+	#for i in range(1,length=length(pH_list))
+		#if pH_list[i] == -Inf
+			#pH_list_lie = replace(pH_list,pH_list[i] =>(pH_list[i-1]+pH_list[i+1])/2)
 			#pH_list[i] == (pH_list[i-1]+pH_list[i+1])/2
-		end
-	end
+		#end
+	#end
 end
 
 # ╔═╡ ab6a95fe-05ff-48f4-a75f-7ae31e2862c5
 scatter(bureta,pH_list, title = "Curva de pH", label = ["pH" "pH"], xlabel = "ml NaOH", ylabel = "pH", legend = false, mode="lines");
 
 # ╔═╡ 445a3f83-f82b-4175-a85c-f84c3bb09d3a
-
-Plots.plot!((bureta,pH_list), title= "Curva de pH", legend =false)	
+begin 
+	Plots.plot!((bureta,pH_list), title= "Curva de pH", legend =false);
+	if last(pH_list) > 7
+		if -Inf in pH_list 
+			vol_eq = bureta[findall(isequal(-Inf), pH_list)]
+			Plots.plot!((bureta,pH_list), title= "Curva de pH", legend =false);
+			Plots.plot!((vol_eq,7), title= "Curva de pH", legend =false, markercolor = :red, markershape = :pentagon)
+			annotate!((vol_eq.+4), 7.2, "pH = 7", :color);
+		else
+			v1 = bureta[findall(isequal(last((pH_list[pH_list .< 3]))),pH_list)]
+			v2 = bureta[findall(isequal(first((pH_list[pH_list .> 3]))),pH_list)]
+			vol_eq = (v1.+v2)./2
+			Plots.plot!((bureta,pH_list), title= "Curva de pH", legend =false)
+			Plots.plot!((vol_eq,7), title= "Curva de pH", legend =false, markercolor = :red, markershape = :pentagon)
+			annotate!((vol_eq.+4), 7.2, "pH = 7", :color);
+		end
+	else
+		Plots.plot!((bureta,pH_list), title= "Curva de pH", legend =false)
+	end
+end
 
 # ╔═╡ 3d7010d3-3ced-4fe6-bcce-01e41d656c57
 #if pH_list[46] == -Inf
@@ -1106,13 +1125,13 @@ version = "0.9.1+5"
 # ╟─c05192ea-46d5-4a4d-8d7b-aabd5035c241
 # ╟─8b512d53-1a96-40f8-88d6-9caf28bbe9ef
 # ╟─1aefcb86-c78f-4bee-9205-75c2b1d972d3
-# ╠═e803cbfc-b47c-4168-9ca7-19656e7f7202
-# ╠═8f64a5cd-c290-4972-8714-f914d730f700
+# ╟─e803cbfc-b47c-4168-9ca7-19656e7f7202
+# ╟─8f64a5cd-c290-4972-8714-f914d730f700
 # ╟─ab6a95fe-05ff-48f4-a75f-7ae31e2862c5
-# ╠═445a3f83-f82b-4175-a85c-f84c3bb09d3a
-# ╠═3d7010d3-3ced-4fe6-bcce-01e41d656c57
+# ╟─445a3f83-f82b-4175-a85c-f84c3bb09d3a
 # ╟─a6f6bacb-f8c3-4bca-9b85-964afb90f662
 # ╟─537ea4b1-8cd1-4897-97be-a859d6519b68
 # ╟─e7a769e6-7cbd-4aa3-af4f-eea1dbb34d45
+# ╠═3d7010d3-3ced-4fe6-bcce-01e41d656c57
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
