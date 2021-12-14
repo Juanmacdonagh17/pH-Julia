@@ -65,7 +65,7 @@ function α(self::Neutral,pH) # Devielve 1 porque no tiene disociacion, devuelvo
 	[1]
 end
 	
-function pHsolve(sys::System,pH::Float64)
+function pHsolve(sys,pH::Float64)
 	function minimise(pH)
 		h3o=10.0^(-pH)
      	oh = (10.0^(-14))/h3o
@@ -76,7 +76,7 @@ function pHsolve(sys::System,pH::Float64)
 		abs(x)
 		println(abs(x))
 	end
-	optimize(x->minimise(first(x)), pH).minimum
+	optimize(x->minimise(first(x)), [pH]).minimum
 end
 end
 	
