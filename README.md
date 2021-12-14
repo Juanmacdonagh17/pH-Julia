@@ -13,6 +13,7 @@ Script básico con el objetivo de graficar (en tiempo real) titulaciones ácido-
 | ------------------------------------|:-------------:|
 | Evitar errores con pares M/ml       | 98%           |
 | Programar HH (parés débiles)        | 30%           |
+| Modularizar HH e implementar en Tit.| Pendiente     |
 | Agregar expliación HH               | Pendiente     |
 | Rango de posibles indicadores       | Terminado     |
 | Experimentarvolumenes en la bureta  | Pendiente     |
