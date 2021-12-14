@@ -175,31 +175,23 @@ end
 
 # ╔═╡ 445a3f83-f82b-4175-a85c-f84c3bb09d3a
 begin 
-	Plots.plot!((bureta,pH_list), title= "Curva de pH", legend =false);
+	scatter(bureta,pH_list, title = "Curva de pH", label = ["pH" "pH"], xlabel = "ml NaOH", ylabel = "pH", legend = false, mode="lines");
 	if last(pH_list) > 7
 		if -Inf in pH_list 
 			vol_eq = bureta[findall(isequal(-Inf), pH_list)]
-			Plots.plot!((bureta,pH_list), title= "Curva de pH", legend =false);
-			Plots.plot!((vol_eq,7), title= "Curva de pH", legend =false, markercolor = :red, markershape = :pentagon)
-			annotate!((vol_eq.+4), 7.2, "pH = 7", :color);
+			Plots.plot!((bureta,pH_list), title= "Curva de pH", legend =false, label = false, hover=false);
+			Plots.plot!((vol_eq,7), title= "Curva de pH", legend =false, markercolor = :red, markershape = :pentagon, label = "pH 7");
 		else
 			v1 = bureta[findall(isequal(last((pH_list[pH_list .< 3]))),pH_list)]
 			v2 = bureta[findall(isequal(first((pH_list[pH_list .> 3]))),pH_list)]
 			vol_eq = (v1.+v2)./2
-			Plots.plot!((bureta,pH_list), title= "Curva de pH", legend =false)
-			Plots.plot!((vol_eq,7), title= "Curva de pH", legend =false, markercolor = :red, markershape = :pentagon)
-			annotate!((vol_eq.+4), 7.2, "pH = 7", :color);
+			Plots.plot!((bureta,pH_list), title= "Curva de pH", legend =false, label = false, hover=false);
+			Plots.plot!((vol_eq,7), title= "Curva de pH", legend =false, markercolor = :red, markershape = :pentagon, label = "pH 7");
 		end
 	else
 		Plots.plot!((bureta,pH_list), title= "Curva de pH", legend =false)
 	end
 end
-
-# ╔═╡ 3d7010d3-3ced-4fe6-bcce-01e41d656c57
-#if pH_list[46] == -Inf
-	#a = replace(pH_list,pH_list[46] =>(pH_list[46-1]+pH_list[46+1])/2)
-			#pH_list[i] == (pH_list[i-1]+pH_list[i+1])/2
-#end
 
 # ╔═╡ a6f6bacb-f8c3-4bca-9b85-964afb90f662
 md"""
@@ -1130,19 +1122,10 @@ version = "0.9.1+5"
 # ╟─1aefcb86-c78f-4bee-9205-75c2b1d972d3
 # ╟─e803cbfc-b47c-4168-9ca7-19656e7f7202
 # ╟─8f64a5cd-c290-4972-8714-f914d730f700
-<<<<<<< HEAD
 # ╠═445a3f83-f82b-4175-a85c-f84c3bb09d3a
 # ╟─a6f6bacb-f8c3-4bca-9b85-964afb90f662
 # ╟─537ea4b1-8cd1-4897-97be-a859d6519b68
 # ╟─e7a769e6-7cbd-4aa3-af4f-eea1dbb34d45
 # ╟─3d7010d3-3ced-4fe6-bcce-01e41d656c57
-=======
-# ╟─ab6a95fe-05ff-48f4-a75f-7ae31e2862c5
-# ╟─445a3f83-f82b-4175-a85c-f84c3bb09d3a
-# ╟─a6f6bacb-f8c3-4bca-9b85-964afb90f662
-# ╟─537ea4b1-8cd1-4897-97be-a859d6519b68
-# ╟─e7a769e6-7cbd-4aa3-af4f-eea1dbb34d45
-# ╠═3d7010d3-3ced-4fe6-bcce-01e41d656c57
->>>>>>> 8afd61df5bd75d591cd5cc0086585adad91f228b
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
