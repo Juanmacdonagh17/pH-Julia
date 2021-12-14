@@ -11,15 +11,15 @@ Script básico con el objetivo de graficar (en tiempo real) titulaciones ácido-
 ## Tareas pendientes / actuales: 
 | Tarea                               | Estado        |
 | ------------------------------------|:-------------:|
-| Evitar errores con pares M/ml       | Pendiente     |
+| Evitar errores con pares M/ml       | 98%           |
 | Programar HH (parés débiles)        | Pendiente     |
 | Agregar expliación HH               | Pendiente     |
 | Rango de posibles indicadores       | Terminado     |
 | Experimentarvolumenes en la bureta  | Pendiente     |
 | Modificar slider bureta             | Pendiente     |
-| Estructura de datos ind (JSON/ dict)| Pendiente     |
+| Estructura de datos ind (JSON/ dict)| Terminado     |
 | Poner lindo el readme               | Terminado     |
-| Punto de equivalencia               | 50%           |
+| Punto de equivalencia               | Terminado     |
 
 
 
