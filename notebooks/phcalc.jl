@@ -4,9 +4,19 @@
 using Markdown
 using InteractiveUtils
 
+# This Pluto notebook uses @bind for interactivity. When running this notebook outside of Pluto, the following 'mock version' of @bind gives bound variables a default value (instead of an error).
+macro bind(def, element)
+    quote
+        local iv = try Base.loaded_modules[Base.PkgId(Base.UUID("6e696c72-6542-2067-7265-42206c756150"), "AbstractPlutoDingetjes")].Bonds.initial_value catch; b -> missing; end
+        local el = $(esc(element))
+        global $(esc(def)) = Core.applicable(Base.get, el) ? Base.get(el) : iv(el)
+        el
+    end
+end
+
 # ╔═╡ dbd43667-6b86-4960-adfb-dbbd922a63ea
 begin
-	using Optim, Plots, LaTeXStrings
+	using Optim, Plots, LaTeXStrings, PlutoUI
 	plotly();
 end
 
@@ -74,9 +84,8 @@ function pHsolve(sys,pH::Float64)
 			x+=(specie.conc.*specie.charge.*α(specie,pH))|>sum
 		end
 		abs(x)
-		println(abs(x))
 	end
-	optimize(x->minimise(first(x)), [pH]).minimum
+	optimize(x->minimise(first(x)), [pH], BFGS())
 end
 end
 	
@@ -85,12 +94,12 @@ end
 begin
 	fosforico=Acid([7.52e-3,6.23e-8,4.8e-13],.1)
 	# potasio=Neutral([1,2],.1)
-	# acetico=Acid(1.8e5,.1)
-	sistema=System(fosforico)
+	acetico=Acid(1.8e5,.1)
+	sistema=System(acetico)
 end
 
 # ╔═╡ dc03fa2a-3571-450d-8488-3203c0233c45
-pHsolve(sistema,3.0)
+pHsolve(sistema,5.2)
 
 
 # ╔═╡ f6d249c9-f32a-45ee-be3b-7a4a9764cfb8
@@ -113,6 +122,13 @@ end
 	p
 end
 
+# ╔═╡ 5661a905-fd1e-429c-8e6a-b9b3a572ff2a
+@bind x Select(1:10)
+
+# ╔═╡ 3332bfe0-17d3-4355-a3cb-e8f42aa59e06
+md"""
+hola  = $x
+"""
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -120,16 +136,24 @@ PLUTO_PROJECT_TOML_CONTENTS = """
 LaTeXStrings = "b964fa9f-0449-5b57-a5c2-d3ea65f4040f"
 Optim = "429524aa-4258-5aef-a3af-852621145aeb"
 Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
+PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
 
 [compat]
 LaTeXStrings = "~1.3.0"
 Optim = "~1.5.0"
 Plots = "~1.25.2"
+PlutoUI = "~0.7.23"
 """
 
 # ╔═╡ 00000000-0000-0000-0000-000000000002
 PLUTO_MANIFEST_TOML_CONTENTS = """
 # This file is machine-generated - editing it directly is not advised
+
+[[AbstractPlutoDingetjes]]
+deps = ["Pkg"]
+git-tree-sha1 = "abb72771fd8895a7ebd83d5632dc4b989b022b5b"
+uuid = "6e696c72-6542-2067-7265-42206c756150"
+version = "1.1.2"
 
 [[Adapt]]
 deps = ["LinearAlgebra"]
@@ -396,6 +420,23 @@ deps = ["Artifacts", "Cairo_jll", "Fontconfig_jll", "FreeType2_jll", "Glib_jll",
 git-tree-sha1 = "129acf094d168394e80ee1dc4bc06ec835e510a3"
 uuid = "2e76f6c2-a576-52d4-95c1-20adfe4de566"
 version = "2.8.1+1"
+
+[[Hyperscript]]
+deps = ["Test"]
+git-tree-sha1 = "8d511d5b81240fc8e6802386302675bdf47737b9"
+uuid = "47d2ed2b-36de-50cf-bf87-49c2cf4b8b91"
+version = "0.0.4"
+
+[[HypertextLiteral]]
+git-tree-sha1 = "2b078b5a615c6c0396c77810d92ee8c6f470d238"
+uuid = "ac1192a8-f4b3-4bfe-ba22-af5b92cd3ab2"
+version = "0.9.3"
+
+[[IOCapture]]
+deps = ["Logging", "Random"]
+git-tree-sha1 = "f7be53659ab06ddc986428d3a9dcc95f6fa6705a"
+uuid = "b5f81e59-6552-4d32-b1f0-c071b021bf89"
+version = "0.2.2"
 
 [[IfElse]]
 git-tree-sha1 = "debdd00ffef04665ccbb3e150747a77560e8fad1"
@@ -695,6 +736,12 @@ deps = ["Base64", "Contour", "Dates", "Downloads", "FFMPEG", "FixedPointNumbers"
 git-tree-sha1 = "65ebc27d8c00c84276f14aaf4ff63cbe12016c70"
 uuid = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 version = "1.25.2"
+
+[[PlutoUI]]
+deps = ["AbstractPlutoDingetjes", "Base64", "Dates", "Hyperscript", "HypertextLiteral", "IOCapture", "InteractiveUtils", "JSON", "Logging", "Markdown", "Random", "Reexport", "UUIDs"]
+git-tree-sha1 = "5152abbdab6488d5eec6a01029ca6697dff4ec8f"
+uuid = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
+version = "0.7.23"
 
 [[PositiveFactorizations]]
 deps = ["LinearAlgebra"]
@@ -1086,6 +1133,8 @@ version = "0.9.1+5"
 # ╠═d136b0c6-5b94-11ec-01b6-4f5226fe2044
 # ╠═38c1cace-25cc-4d66-830b-14d3c3aaba6d
 # ╠═dc03fa2a-3571-450d-8488-3203c0233c45
-# ╠═f6d249c9-f32a-45ee-be3b-7a4a9764cfb8
+# ╟─f6d249c9-f32a-45ee-be3b-7a4a9764cfb8
+# ╠═5661a905-fd1e-429c-8e6a-b9b3a572ff2a
+# ╠═3332bfe0-17d3-4355-a3cb-e8f42aa59e06
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
