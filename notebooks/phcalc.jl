@@ -16,7 +16,7 @@ end
 
 # ╔═╡ dbd43667-6b86-4960-adfb-dbbd922a63ea
 begin
-	using Optim, Plots, LaTeXStrings, PlutoUI
+	using Optim, Plots, LaTeXStrings, PlutoUI, Unitful
 	plotly();
 end
 
@@ -38,14 +38,15 @@ struct Acid
 	charge::Vector{Int64}
 	pKA::Vector{Float64}
 	_ka::Vector{Float64}
-	function Acid(ka, conc)
+	function Acid(ka, conc, charge::Int64)
 			if typeof(ka) <: Number
 				ka=[ka]
 			end
 			_ka=copy(ka)
 			sort!(ka, rev=:true)
 			prepend!(_ka,1.)
-			charge=-collect(0:length(ka))
+			charge=charge:-1:charge-(length(ka)) |> collect
+			# charge=LinRange(charge,-length(ka), length(ka))
 			new(ka, conc,charge , -log10.(ka),_ka )
 		end
 end
@@ -75,32 +76,39 @@ function α(self::Neutral,pH) # Devielve 1 porque no tiene disociacion, devuelvo
 	[1]
 end
 	
-function pHsolve(sys,pH::Float64)
+function pHsolve(sys)
 	function minimise(pH)
 		h3o=10.0^(-pH)
      	oh = (10.0^(-14))/h3o
 	 	x = (h3o - oh)
 		for specie in sys.species
-			x+=(specie.conc.*specie.charge.*α(specie,pH))|>sum
+			x+=(specie.conc.*specie.charge.*α(specie,pH))|> sum
 		end
-		abs(x)
+	 	abs(x)
 	end
-	optimize(x->minimise(first(x)), [pH], BFGS())
+	
+	function phguess()
+		phv=1:1.:14
+		minimise.(phv) |> argmin |> x -> getindex(phv, x)
+	end
+	guess=phguess()
+	optimize(x->minimise(first(x)), [guess], BFGS()).minimizer |> first
 end
 end
 	
 
 # ╔═╡ 38c1cace-25cc-4d66-830b-14d3c3aaba6d
 begin
-	fosforico=Acid([7.52e-3,6.23e-8,4.8e-13],.1)
+	fosforico=Acid([7.52e-3,6.23e-8,4.8e-13],.0007,0)
 	# potasio=Neutral([1,2],.1)
-	acetico=Acid(1.8e5,.1)
-	sistema=System(acetico)
+	acetico=Acid(1.8e-5,.001,0)
+	clorhidrico=Neutral(-1,1e-3)
+	aspartico=Acid([2.09,9.82,3.86],0.0006, 1)
+	sistema=System(clorhidrico, acetico, fosforico)
 end
 
 # ╔═╡ dc03fa2a-3571-450d-8488-3203c0233c45
-pHsolve(sistema,5.2)
-
+pH=pHsolve(sistema)
 
 # ╔═╡ f6d249c9-f32a-45ee-be3b-7a4a9764cfb8
 begin
@@ -122,13 +130,34 @@ end
 	p
 end
 
-# ╔═╡ 5661a905-fd1e-429c-8e6a-b9b3a572ff2a
-@bind x Select(1:10)
-
-# ╔═╡ 3332bfe0-17d3-4355-a3cb-e8f42aa59e06
+# ╔═╡ 11691744-7892-4ac7-874b-e0c5dfb3c932
 md"""
-hola  = $x
+Concentración de titulante: $(@bind conc_na Slider(.01:.05:0.5, default=0.1, show_value=true))\
+
+Volumen de ácido a titular (ml): $(@bind vol_erlen Slider(5:20, default = 10, show_value = true))\
+
+Concentración molar del Ácido (ml): $(@bind conc_ac Slider(0.01: 0.01 :1, show_value = true))\
 """
+
+# ╔═╡ 71afb541-c7de-40b8-bfa1-6a378ee54a6e
+begin
+	fosforico_tit=Acid([7.52e-3,6.23e-8,4.8e-13],conc_ac,0)
+	vols_agregados=0.0001:.2:vol_erlen+5
+	vols_en_erlen=vol_erlen .+ vols_agregados
+	concs_en_erlen=(conc_na*cumsum(vols_agregados)) ./ vols_en_erlen
+	pHsas=(x-> Neutral(1,x) |> x-> System(fosforico_tit, x)|> pHsolve).(concs_en_erlen);
+	;
+end
+
+# ╔═╡ 1708178e-c961-45d4-9dcb-5c763400c95a
+begin
+	p2=Plots.scatter(vols_agregados ,pHsas, legend=:false)
+	xlabel!(p2,"Vol. NaOH")
+	ylabel!("pH")
+	title!("Titulación de H3PO4 con NaOH")
+	# Plots.savefig(p2,"falopa.png")
+	p2
+end
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -137,12 +166,14 @@ LaTeXStrings = "b964fa9f-0449-5b57-a5c2-d3ea65f4040f"
 Optim = "429524aa-4258-5aef-a3af-852621145aeb"
 Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
+Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
 
 [compat]
 LaTeXStrings = "~1.3.0"
 Optim = "~1.5.0"
 Plots = "~1.25.2"
 PlutoUI = "~0.7.23"
+Unitful = "~1.9.2"
 """
 
 # ╔═╡ 00000000-0000-0000-0000-000000000002
@@ -233,6 +264,12 @@ version = "3.41.0"
 [[CompilerSupportLibraries_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "e66e0078-7015-5450-92f7-15fbd957f2ae"
+
+[[ConstructionBase]]
+deps = ["LinearAlgebra"]
+git-tree-sha1 = "f74e9d5388b8620b4cee35d4c5a618dd4dc547f4"
+uuid = "187b0558-2788-49d3-abe0-74a17ed4e7c9"
+version = "1.3.0"
 
 [[Contour]]
 deps = ["StaticArrays"]
@@ -916,6 +953,12 @@ git-tree-sha1 = "53915e50200959667e78a92a418594b428dffddf"
 uuid = "1cfade01-22cf-5700-b092-accc4b62d6e1"
 version = "0.4.1"
 
+[[Unitful]]
+deps = ["ConstructionBase", "Dates", "LinearAlgebra", "Random"]
+git-tree-sha1 = "0992ed0c3ef66b0390e5752fe60054e5ff93b908"
+uuid = "1986cc42-f94f-5a68-af5c-568840ba703d"
+version = "1.9.2"
+
 [[Wayland_jll]]
 deps = ["Artifacts", "Expat_jll", "JLLWrappers", "Libdl", "Libffi_jll", "Pkg", "XML2_jll"]
 git-tree-sha1 = "3e61f0b86f90dacb0bc0e73a0c5a83f6a8636e23"
@@ -1131,10 +1174,11 @@ version = "0.9.1+5"
 # ╟─5ad96e47-9ca9-493f-b899-a109826953b7
 # ╠═dbd43667-6b86-4960-adfb-dbbd922a63ea
 # ╠═d136b0c6-5b94-11ec-01b6-4f5226fe2044
-# ╠═38c1cace-25cc-4d66-830b-14d3c3aaba6d
-# ╠═dc03fa2a-3571-450d-8488-3203c0233c45
+# ╟─38c1cace-25cc-4d66-830b-14d3c3aaba6d
+# ╟─dc03fa2a-3571-450d-8488-3203c0233c45
 # ╟─f6d249c9-f32a-45ee-be3b-7a4a9764cfb8
-# ╠═5661a905-fd1e-429c-8e6a-b9b3a572ff2a
-# ╠═3332bfe0-17d3-4355-a3cb-e8f42aa59e06
+# ╟─11691744-7892-4ac7-874b-e0c5dfb3c932
+# ╟─71afb541-c7de-40b8-bfa1-6a378ee54a6e
+# ╟─1708178e-c961-45d4-9dcb-5c763400c95a
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
