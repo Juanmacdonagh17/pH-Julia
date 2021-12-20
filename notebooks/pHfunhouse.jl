@@ -262,9 +262,9 @@ version = "1.0.8+0"
 
 [[Cairo_jll]]
 deps = ["Artifacts", "Bzip2_jll", "Fontconfig_jll", "FreeType2_jll", "Glib_jll", "JLLWrappers", "LZO_jll", "Libdl", "Pixman_jll", "Pkg", "Xorg_libXext_jll", "Xorg_libXrender_jll", "Zlib_jll", "libpng_jll"]
-git-tree-sha1 = "f2202b55d816427cd385a9a4f3ffb226bee80f99"
+git-tree-sha1 = "4b859a208b2397a7a623a03449e4636bdb17bcf2"
 uuid = "83423d85-b0ee-5818-9007-b63ccbeb887a"
-version = "1.16.1+0"
+version = "1.16.1+1"
 
 [[ChainRulesCore]]
 deps = ["Compat", "LinearAlgebra", "SparseArrays"]
@@ -436,9 +436,9 @@ version = "0.21.0+0"
 
 [[Glib_jll]]
 deps = ["Artifacts", "Gettext_jll", "JLLWrappers", "Libdl", "Libffi_jll", "Libiconv_jll", "Libmount_jll", "PCRE_jll", "Pkg", "Zlib_jll"]
-git-tree-sha1 = "74ef6288d071f58033d54fd6708d4bc23a8b8972"
+git-tree-sha1 = "a32d672ac2c967f3deb8a81d828afc739c838a06"
 uuid = "7746bdde-850d-59dc-9ae8-88ece973131d"
-version = "2.68.3+1"
+version = "2.68.3+2"
 
 [[Graphite2_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
@@ -1119,10 +1119,10 @@ version = "0.9.1+5"
 # ╟─af14eab0-655e-425b-a483-dc63fc501045
 # ╟─c05192ea-46d5-4a4d-8d7b-aabd5035c241
 # ╟─8b512d53-1a96-40f8-88d6-9caf28bbe9ef
-# ╠═1aefcb86-c78f-4bee-9205-75c2b1d972d3
+# ╟─1aefcb86-c78f-4bee-9205-75c2b1d972d3
 # ╟─e803cbfc-b47c-4168-9ca7-19656e7f7202
 # ╟─8f64a5cd-c290-4972-8714-f914d730f700
-# ╠═445a3f83-f82b-4175-a85c-f84c3bb09d3a
+# ╟─445a3f83-f82b-4175-a85c-f84c3bb09d3a
 # ╟─a6f6bacb-f8c3-4bca-9b85-964afb90f662
 # ╟─537ea4b1-8cd1-4897-97be-a859d6519b68
 # ╟─e7a769e6-7cbd-4aa3-af4f-eea1dbb34d45

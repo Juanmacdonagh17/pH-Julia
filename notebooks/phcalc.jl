@@ -17,13 +17,8 @@ end
 # ╔═╡ dbd43667-6b86-4960-adfb-dbbd922a63ea
 begin
 	using Optim, Plots, LaTeXStrings, PlutoUI, Unitful, PlotlyJS, DataFrames, StatsPlots
-	gr()
-end
-
-# ╔═╡ 206e855e-8e34-4141-a3f8-1ea2cda44075
-md"""
- De que especie queres hacer la distri? $(@bind Select(especies |> keys |> collect)
-)"""
+	plotly()
+end;
 
 # ╔═╡ 5ad96e47-9ca9-493f-b899-a109826953b7
 md"""
@@ -35,12 +30,9 @@ md"""
 
 
 
-# ╔═╡ 529a1d21-2256-4c06-8e72-183cd9278beb
-
-
 # ╔═╡ d136b0c6-5b94-11ec-01b6-4f5226fe2044
 begin
-struct Acid
+mutable struct Acid
 	ka::Vector{Float64}
 	conc::Float64
 	charge::Vector{Int64}
@@ -60,7 +52,7 @@ struct Acid
 		end
 end
 	
-struct Neutral
+mutable struct Neutral
 	charge::Union{Vector{Int64},Int64}
 	conc::Float64
 end
@@ -109,22 +101,24 @@ end
 # ╔═╡ 38c1cace-25cc-4d66-830b-14d3c3aaba6d
 begin
 	fosforico=Acid([7.52e-3,6.23e-8,4.8e-13],.0007,0)
-	# potasio=Neutral([1,2],.1)
 	acetico=Acid(1.8e-5,.001,0)
 	clorhidrico=Neutral(-1,1e-3)
 	aspartico=Acid((x-> 10^-x).([2.09,9.82,3.86]),0.06, 1)
 	sistema=System(clorhidrico, acetico, fosforico)
-end
+end;
 
-# ╔═╡ 31244a46-a956-4b0a-bed4-4e043716791a
-aspartico
-
-# ╔═╡ dc03fa2a-3571-450d-8488-3203c0233c45
-pH=pHsolve(sistema)
+# ╔═╡ 1e2f4ee6-0ec2-4357-adb5-8ab6c593d8df
+especies=Dict(
+	:aspartico=>aspartico,
+	:fosforico=>fosforico,
+	:acetico=>acetico,
+	:clorhidrico=>clorhidrico
+);
 
 # ╔═╡ f6d249c9-f32a-45ee-be3b-7a4a9764cfb8
 begin
 	phs=1:.1:14
+
 	data=(x->α(fosforico,x)).(phs) |> x->hcat(x...) 
 	# Plots.plot(phs,hcat(data...))
 	p=Plots.plot()
@@ -142,6 +136,15 @@ end
 	p
 end
 
+# ╔═╡ 635d433f-482d-45a9-a6fa-ab3b87b4b092
+
+md"""
+
+Sustancia a titular $(@bind esp Select(especies|> keys |> collect))
+
+
+"""
+
 # ╔═╡ 11691744-7892-4ac7-874b-e0c5dfb3c932
 md"""
 Concentración de titulante (M): $(@bind conc_na Slider(LinRange(.1,.5,50), default=0.1, show_value=true);)\
@@ -153,30 +156,28 @@ Concentración molar del Ácido (M): $(@bind conc_ac Slider(LinRange(.1,.5,50), 
 
 # ╔═╡ 71afb541-c7de-40b8-bfa1-6a378ee54a6e
 begin
-	fosforico_tit=Acid([7.52e-3,6.23e-8,4.8e-13],conc_ac,0)
-	vols_agregados=LinRange(.1,vol_erlen+5,50)      #0.0001:.2:vol_erlen+5
+	resolucion=60		
+	# fosforico_tit=Acid([7.52e-3,6.23e-8,4.8e-13],conc_ac,0)
+	sustancia=especies[esp]
+	sustancia.conc=conc_ac
+	vols_agregados=LinRange(.1,vol_erlen+5,resolucion)      #0.0001:.2:vol_erlen+5
 	vols_en_erlen=vol_erlen .+ vols_agregados
 	concs_en_erlen=(conc_na*cumsum(vols_agregados)) ./ vols_en_erlen
-	pHsas=(x-> Neutral(1,x) |> x-> System(fosforico_tit, x)|> pHsolve).(concs_en_erlen);
+	pHsas=(x-> Neutral(1,x) |> x-> System(sustancia, x)|> pHsolve).(concs_en_erlen);
 end;
 
 # ╔═╡ 1708178e-c961-45d4-9dcb-5c763400c95a
 begin
 	p2=Plots.scatter(vols_agregados ,pHsas, legend=:false)
+	Plots.plot!(p2,vols_agregados ,pHsas, legend=:false )
 	xlabel!(p2,"Vol. NaOH")
 	ylabel!("pH")
-	title!("Titulación de H3PO4 con NaOH")
-	Plots.savefig(p2,"falopa.png")
+	title!("Titulación de Ácido $(esp) con NaOH")
+	# Plots.savefig(p2,"falopa.png")
 	p2
 	# png("faLoPa")
 	# p2
 end
-
-# ╔═╡ 1e2f4ee6-0ec2-4357-adb5-8ab6c593d8df
-especies=Dict(
-	:aspartico=>aspartico,
-	:fosforico=>fosforico
-);
 
 # ╔═╡ d3eea87b-0695-4f39-a8b1-ef943619d094
 @bind axa Select(especies |> keys |> collect)
@@ -184,8 +185,11 @@ especies=Dict(
 # ╔═╡ f05cb0bf-12e1-48b0-9b3a-7d9f34018b6a
 begin
 	arr=1:.1:14
-	p3 = (x-> α(especies[axa], x)).(arr) |> x->  hcat(x...) |> transpose |> x-> Plots.plot(arr,x)
-	
+	p3 = (x-> α(especies[axa], x)).(arr) |> x->  hcat(x...) |> transpose |> x-> Plots.plot(arr,x, legend=:false)
+	for pka ∈ especies[axa].pKA
+		vline!([pka])
+	end
+	p3
 end
 
 
@@ -293,9 +297,9 @@ version = "1.0.8+0"
 
 [[Cairo_jll]]
 deps = ["Artifacts", "Bzip2_jll", "Fontconfig_jll", "FreeType2_jll", "Glib_jll", "JLLWrappers", "LZO_jll", "Libdl", "Pixman_jll", "Pkg", "Xorg_libXext_jll", "Xorg_libXrender_jll", "Zlib_jll", "libpng_jll"]
-git-tree-sha1 = "f2202b55d816427cd385a9a4f3ffb226bee80f99"
+git-tree-sha1 = "4b859a208b2397a7a623a03449e4636bdb17bcf2"
 uuid = "83423d85-b0ee-5818-9007-b63ccbeb887a"
-version = "1.16.1+0"
+version = "1.16.1+1"
 
 [[ChainRulesCore]]
 deps = ["Compat", "LinearAlgebra", "SparseArrays"]
@@ -575,9 +579,9 @@ version = "0.21.0+0"
 
 [[Glib_jll]]
 deps = ["Artifacts", "Gettext_jll", "JLLWrappers", "Libdl", "Libffi_jll", "Libiconv_jll", "Libmount_jll", "PCRE_jll", "Pkg", "Zlib_jll"]
-git-tree-sha1 = "74ef6288d071f58033d54fd6708d4bc23a8b8972"
+git-tree-sha1 = "a32d672ac2c967f3deb8a81d828afc739c838a06"
 uuid = "7746bdde-850d-59dc-9ae8-88ece973131d"
-version = "2.68.3+1"
+version = "2.68.3+2"
 
 [[Graphite2_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
@@ -1529,20 +1533,17 @@ version = "0.9.1+5"
 """
 
 # ╔═╡ Cell order:
-# ╠═206e855e-8e34-4141-a3f8-1ea2cda44075
 # ╟─5ad96e47-9ca9-493f-b899-a109826953b7
-# ╠═dbd43667-6b86-4960-adfb-dbbd922a63ea
-# ╠═529a1d21-2256-4c06-8e72-183cd9278beb
-# ╠═d136b0c6-5b94-11ec-01b6-4f5226fe2044
-# ╠═38c1cace-25cc-4d66-830b-14d3c3aaba6d
-# ╠═31244a46-a956-4b0a-bed4-4e043716791a
-# ╟─dc03fa2a-3571-450d-8488-3203c0233c45
-# ╠═f6d249c9-f32a-45ee-be3b-7a4a9764cfb8
+# ╟─dbd43667-6b86-4960-adfb-dbbd922a63ea
+# ╟─d136b0c6-5b94-11ec-01b6-4f5226fe2044
+# ╟─38c1cace-25cc-4d66-830b-14d3c3aaba6d
+# ╟─1e2f4ee6-0ec2-4357-adb5-8ab6c593d8df
+# ╟─f6d249c9-f32a-45ee-be3b-7a4a9764cfb8
+# ╟─635d433f-482d-45a9-a6fa-ab3b87b4b092
 # ╟─11691744-7892-4ac7-874b-e0c5dfb3c932
 # ╟─71afb541-c7de-40b8-bfa1-6a378ee54a6e
-# ╠═1708178e-c961-45d4-9dcb-5c763400c95a
-# ╟─1e2f4ee6-0ec2-4357-adb5-8ab6c593d8df
+# ╟─1708178e-c961-45d4-9dcb-5c763400c95a
 # ╟─d3eea87b-0695-4f39-a8b1-ef943619d094
-# ╠═f05cb0bf-12e1-48b0-9b3a-7d9f34018b6a
+# ╟─f05cb0bf-12e1-48b0-9b3a-7d9f34018b6a
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
