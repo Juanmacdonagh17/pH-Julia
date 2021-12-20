@@ -1,7 +1,7 @@
 using Optim
 module pHcalc
 
-export Neutral, System, α,pHsolve
+export Neutral, System, α, Acid,pHsolve, minimise
 
 struct Acid
 	ka::Vector{Float64}
@@ -67,7 +67,15 @@ function pHsolve(sys)
 end
 
 
-
+function minimise(sys::System,pH)
+	h3o=10.0^(-pH)
+     	oh = (10.0^(-14))/h3o
+	 x = (h3o - oh)
+	for specie in sys.species
+		x+=(specie.conc.*specie.charge.*α(specie,pH))|> sum
+	end
+	 abs(x)
+end
 
 
 end
