@@ -93,7 +93,7 @@ function pHsolve(sys)
 		minimise.(phv) |> argmin |> x -> getindex(phv, x)
 	end
 	guess=phguess()
-	optimize(x->minimise(first(x)), [guess], BFGS(), Optim.Options(g_tol=1e-5)).minimizer |> first
+	optimize(x->minimise(first(x)), [guess], BFGS()).minimizer |> first
 end
 end
 	
@@ -102,9 +102,9 @@ end
 begin
 	fosforico=Acid([7.52e-3,6.23e-8,4.8e-13],.0007,0)
 	acetico=Acid(1.8e-5,.001,0)
-	clorhidrico=Neutral(-1,1e-3)
+	clorhidrico=Neutral(-1,1e-8)
 	aspartico=Acid((x-> 10^-x).([2.09,9.82,3.86]),0.06, 1)
-	sistema=System(clorhidrico, acetico, fosforico)
+	sistema=System(clorhidrico)
 end;
 
 # ╔═╡ 1e2f4ee6-0ec2-4357-adb5-8ab6c593d8df
@@ -192,6 +192,28 @@ begin
 	p3
 end
 
+
+# ╔═╡ 6fa6ead0-6512-4a5d-9d37-42876d15adc4
+md"""
+### Calculo vectorizado de pH *_(idea)_*
+"""
+
+# ╔═╡ 222595f9-5e92-48b3-862c-248c5f73ecfd
+function minimise(sys::System,pH)
+	h3o=10.0^(-pH)
+     	oh = (10.0^(-14))/h3o
+	 x = (h3o - oh)
+	for specie in sys.species
+		x+=(specie.conc.*specie.charge.*α(specie,pH))|> sum
+	end
+	 abs(x)
+end
+
+# ╔═╡ f29144ca-ebd5-403f-a4a8-70d136b43781
+begin
+	vec=0:.01:14
+(x->minimise(sistema,x)).(vec) |> x-> Plots.plot(vec, x, yscale=:log) 
+end
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -1535,15 +1557,18 @@ version = "0.9.1+5"
 # ╔═╡ Cell order:
 # ╟─5ad96e47-9ca9-493f-b899-a109826953b7
 # ╟─dbd43667-6b86-4960-adfb-dbbd922a63ea
-# ╟─d136b0c6-5b94-11ec-01b6-4f5226fe2044
+# ╠═d136b0c6-5b94-11ec-01b6-4f5226fe2044
 # ╟─38c1cace-25cc-4d66-830b-14d3c3aaba6d
-# ╟─1e2f4ee6-0ec2-4357-adb5-8ab6c593d8df
-# ╟─f6d249c9-f32a-45ee-be3b-7a4a9764cfb8
+# ╠═1e2f4ee6-0ec2-4357-adb5-8ab6c593d8df
+# ╠═f6d249c9-f32a-45ee-be3b-7a4a9764cfb8
 # ╟─635d433f-482d-45a9-a6fa-ab3b87b4b092
 # ╟─11691744-7892-4ac7-874b-e0c5dfb3c932
-# ╟─71afb541-c7de-40b8-bfa1-6a378ee54a6e
-# ╟─1708178e-c961-45d4-9dcb-5c763400c95a
+# ╠═71afb541-c7de-40b8-bfa1-6a378ee54a6e
+# ╠═1708178e-c961-45d4-9dcb-5c763400c95a
 # ╟─d3eea87b-0695-4f39-a8b1-ef943619d094
-# ╟─f05cb0bf-12e1-48b0-9b3a-7d9f34018b6a
+# ╠═f05cb0bf-12e1-48b0-9b3a-7d9f34018b6a
+# ╟─6fa6ead0-6512-4a5d-9d37-42876d15adc4
+# ╠═222595f9-5e92-48b3-862c-248c5f73ecfd
+# ╠═f29144ca-ebd5-403f-a4a8-70d136b43781
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002

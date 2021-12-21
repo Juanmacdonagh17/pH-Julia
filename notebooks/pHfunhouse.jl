@@ -32,7 +32,7 @@ md"""
 md"""
 $\require{mhchem}$
 $\require{relsize}$
-"""
+""";
 
 # ╔═╡ 4ec4df4b-b44d-474c-92ef-4e4cd1cd375f
 #PlutoSliderServer.run_notebook(path_to_notebook)
@@ -215,6 +215,19 @@ end
 	#a = replace(pH_list,pH_list[46] =>(pH_list[46-1]+pH_list[46+1])/2)
 			#pH_list[i] == (pH_list[i-1]+pH_list[i+1])/2
 #end
+
+# ╔═╡ 6ff68f15-b5fa-490c-84c0-115997008326
+md"""
+Number of  HO's $(@bind HO Slider(1:1:10))
+
+Number of  H's $(@bind H Slider(1:1:10))
+
+"""  
+
+# ╔═╡ d3fb6980-0ab9-4b98-b7fc-3928a733af91
+L"""
+\ce{%$H H+ + %$HO HO- <=> H2O } 
+"""
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -1111,7 +1124,7 @@ version = "0.9.1+5"
 # ╟─a9aa8b20-48a6-11ec-037f-e1686702dd38
 # ╟─78375034-5f6b-4055-a373-fe40106764b9
 # ╠═18d6f3bc-f18e-4e40-9aa4-92d25bb467f6
-# ╠═60bc58bb-7c95-484b-a69e-3de41f022f97
+# ╟─60bc58bb-7c95-484b-a69e-3de41f022f97
 # ╟─4ec4df4b-b44d-474c-92ef-4e4cd1cd375f
 # ╟─81034c90-049c-44b9-967b-23a5ce14ac98
 # ╟─1fe00159-7a68-4747-a2b0-8ae4fb3d911f
@@ -1119,13 +1132,15 @@ version = "0.9.1+5"
 # ╟─af14eab0-655e-425b-a483-dc63fc501045
 # ╟─c05192ea-46d5-4a4d-8d7b-aabd5035c241
 # ╟─8b512d53-1a96-40f8-88d6-9caf28bbe9ef
-# ╟─1aefcb86-c78f-4bee-9205-75c2b1d972d3
+# ╠═1aefcb86-c78f-4bee-9205-75c2b1d972d3
 # ╟─e803cbfc-b47c-4168-9ca7-19656e7f7202
 # ╟─8f64a5cd-c290-4972-8714-f914d730f700
-# ╟─445a3f83-f82b-4175-a85c-f84c3bb09d3a
+# ╠═445a3f83-f82b-4175-a85c-f84c3bb09d3a
 # ╟─a6f6bacb-f8c3-4bca-9b85-964afb90f662
 # ╟─537ea4b1-8cd1-4897-97be-a859d6519b68
 # ╟─e7a769e6-7cbd-4aa3-af4f-eea1dbb34d45
 # ╟─3d7010d3-3ced-4fe6-bcce-01e41d656c57
+# ╟─6ff68f15-b5fa-490c-84c0-115997008326
+# ╟─d3fb6980-0ab9-4b98-b7fc-3928a733af91
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
