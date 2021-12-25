@@ -30,6 +30,9 @@ begin
 	    
 	using Plots
 	using PlutoUI
+	using LaTeXStrings
+	using Optim
+	using DataFrames
 	plotly()
     end;
 
