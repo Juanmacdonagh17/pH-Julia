@@ -15,10 +15,23 @@ macro bind(def, element)
 end
 
 # ╔═╡ dbd43667-6b86-4960-adfb-dbbd922a63ea
+# begin
+# 	using Optim, Plots, LaTeXStrings, PlutoUI, Unitful, PlotlyJS, DataFrames, StatsPlots
+# 	plotly()
+# end;
 begin
-	using Optim, Plots, LaTeXStrings, PlutoUI, Unitful, PlotlyJS, DataFrames, StatsPlots
+	import Pkg
+	    ENV["JULIA_MARGO_LOAD_PYPLOT"] = "no thank you"
+	Pkg.activate(mktempdir())
+	Pkg.add([
+	    Pkg.PackageSpec(name="Plots", version="1"),
+	    Pkg.PackageSpec(name="PlutoUI", version="0.7"),
+	"Optim", "LaTeXStrings","Unitful", "DataFrames"])
+	    
+	using Plots
+	using PlutoUI
 	plotly()
-end;
+    end;
 
 # ╔═╡ 5ad96e47-9ca9-493f-b899-a109826953b7
 md"""
