@@ -26,7 +26,11 @@ begin
 	Pkg.add([
 	    Pkg.PackageSpec(name="Plots", version="1"),
 	    Pkg.PackageSpec(name="PlutoUI", version="0.7"),
-	"Optim", "LaTeXStrings","Unitful", "DataFrames"])
+	    Pkg.PackageSpec(name="Optim"),
+	    Pkg.PackageSpec(name="LaTeXStrings"),
+	    Pkg.PackageSpec(name="Unitful"),
+	    Pkg.PackageSpec(name="DataFrames")
+	    ])
 	    
 	using Plots
 	using PlutoUI
