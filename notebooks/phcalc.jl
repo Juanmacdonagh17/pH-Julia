@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.17.3
+# v0.17.4
 
 using Markdown
 using InteractiveUtils
@@ -53,7 +53,7 @@ md"""
 # ╔═╡ d136b0c6-5b94-11ec-01b6-4f5226fe2044
 begin
 mutable struct Acid
-	ka::Vector{Float64}
+	ka::Union{Float64,Vector{Float64}}
 	conc::Float64
 	charge::Vector{Int64}
 	pKA::Vector{Float64}
@@ -115,17 +115,21 @@ function pHsolve(sys)
 	guess=phguess()
 	optimize(x->minimise(first(x)), [guess], BFGS()).minimizer |> first
 end
+	T=Union{Acid, Neutral}
 end
 	
 
 # ╔═╡ 38c1cace-25cc-4d66-830b-14d3c3aaba6d
 begin
-	fosforico=Acid([7.52e-3,6.23e-8,4.8e-13],.0007,0)
+	fosforico=Acid([7.52e-3,6.23e-8,4.8e-13],.01,0)
 	acetico=Acid(1.8e-5,.001,0)
 	clorhidrico=Neutral(-1,1e-8)
 	aspartico=Acid((x-> 10^-x).([2.09,9.82,3.86]),0.06, 1)
 	sistema=System(clorhidrico)
 end;
+
+# ╔═╡ 1417b95f-d243-413e-a97f-38bc2af7fc32
+
 
 # ╔═╡ 1e2f4ee6-0ec2-4357-adb5-8ab6c593d8df
 especies=Dict(
@@ -134,6 +138,9 @@ especies=Dict(
 	:acetico=>acetico,
 	:clorhidrico=>clorhidrico
 );
+
+# ╔═╡ 184f4872-1992-40ff-b7c9-8ae35675a5e9
+fosforico
 
 # ╔═╡ f6d249c9-f32a-45ee-be3b-7a4a9764cfb8
 begin
@@ -174,6 +181,17 @@ Volumen de ácido a titular (ml): $(@bind vol_erlen Slider(5:20, default = 10, s
 Concentración molar del Ácido (M): $(@bind conc_ac Slider(LinRange(.1,.5,50), show_value = true);)\
 """
 
+# ╔═╡ 7b51c5c1-88e1-418b-851f-b728cc1a6a44
+function pde(acido::T, conc_na, vol_erlen)
+	times= typeof(acido) == Acid ? length(acido.ka) : abs(acido.charge)
+	vol = (chr -> (acido.conc * vol_erlen * chr)/conc_na)(collect(1:times))
+	pH = map(1:times) do t
+		base=Neutral(1, t* conc_na)
+		System(acido, base) |> pHsolve
+	end
+	vol,pH
+end
+
 # ╔═╡ 71afb541-c7de-40b8-bfa1-6a378ee54a6e
 begin
 	resolucion=60		
@@ -183,21 +201,38 @@ begin
 	vols_agregados=LinRange(.1,vol_erlen+5,resolucion)      #0.0001:.2:vol_erlen+5
 	vols_en_erlen=vol_erlen .+ vols_agregados
 	concs_en_erlen=(conc_na*cumsum(vols_agregados)) ./ vols_en_erlen
+	pdes=pde(sustancia, conc_na, vol_erlen)
 	pHsas=(x-> Neutral(1,x) |> x-> System(sustancia, x)|> pHsolve).(concs_en_erlen);
 end;
+
+# ╔═╡ b02de6c4-8969-438c-88f7-b2ffb505e6d7
+vols_agregados
+
+# ╔═╡ b42d9c27-de31-4f2e-97c4-866d926ea2b6
+sustancia.conc
 
 # ╔═╡ 1708178e-c961-45d4-9dcb-5c763400c95a
 begin
 	p2=Plots.scatter(vols_agregados ,pHsas, legend=:false)
 	Plots.plot!(p2,vols_agregados ,pHsas, legend=:false )
+	Plots.scatter!(pdes)
 	xlabel!(p2,"Vol. NaOH")
 	ylabel!("pH")
 	title!("Titulación de Ácido $(esp) con NaOH")
 	# Plots.savefig(p2,"falopa.png")
-	p2
+	p2;
 	# png("faLoPa")
 	# p2
 end
+
+# ╔═╡ 4d9fb42f-e7aa-4ffe-983f-4f8e90a1603f
+pd=pde(fosforico, conc_na, vol_erlen)
+
+# ╔═╡ 791fc74f-8535-44a4-831e-1a9b041619e2
+Plots.scatter(pd)
+
+# ╔═╡ aaad8512-d634-4cf1-82cd-923a276215fb
+vol= (chr -> (conc_ac * vol_erlen * chr)/conc_na)([2,3])
 
 # ╔═╡ d3eea87b-0695-4f39-a8b1-ef943619d094
 @bind axa Select(especies |> keys |> collect)
@@ -867,7 +902,7 @@ uuid = "d3d80556-e9d4-5f37-9878-2ab0fcc64255"
 version = "7.1.1"
 
 [[LinearAlgebra]]
-deps = ["Libdl"]
+deps = ["Libdl", "libblastrampoline_jll"]
 uuid = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 
 [[LogExpFunctions]]
@@ -1135,7 +1170,7 @@ deps = ["InteractiveUtils", "Markdown", "Sockets", "Unicode"]
 uuid = "3fa0cd96-eef1-5676-8a61-b3b8758bbffb"
 
 [[Random]]
-deps = ["Serialization"]
+deps = ["SHA", "Serialization"]
 uuid = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 
 [[Ratios]]
@@ -1529,6 +1564,10 @@ git-tree-sha1 = "5982a94fcba20f02f42ace44b9894ee2b140fe47"
 uuid = "0ac62f75-1d6f-5e53-bd7c-93b484bb37c0"
 version = "0.15.1+0"
 
+[[libblastrampoline_jll]]
+deps = ["Artifacts", "Libdl", "OpenBLAS_jll"]
+uuid = "8e850b90-86db-534c-a0d3-1478176c7d93"
+
 [[libfdk_aac_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
 git-tree-sha1 = "daacc84a041563f965be61859a36e17c4e4fcd55"
@@ -1578,13 +1617,21 @@ version = "0.9.1+5"
 # ╟─5ad96e47-9ca9-493f-b899-a109826953b7
 # ╟─dbd43667-6b86-4960-adfb-dbbd922a63ea
 # ╠═d136b0c6-5b94-11ec-01b6-4f5226fe2044
-# ╟─38c1cace-25cc-4d66-830b-14d3c3aaba6d
+# ╠═38c1cace-25cc-4d66-830b-14d3c3aaba6d
+# ╠═1417b95f-d243-413e-a97f-38bc2af7fc32
 # ╠═1e2f4ee6-0ec2-4357-adb5-8ab6c593d8df
+# ╠═184f4872-1992-40ff-b7c9-8ae35675a5e9
 # ╠═f6d249c9-f32a-45ee-be3b-7a4a9764cfb8
 # ╟─635d433f-482d-45a9-a6fa-ab3b87b4b092
-# ╟─11691744-7892-4ac7-874b-e0c5dfb3c932
+# ╠═11691744-7892-4ac7-874b-e0c5dfb3c932
+# ╠═7b51c5c1-88e1-418b-851f-b728cc1a6a44
+# ╠═b02de6c4-8969-438c-88f7-b2ffb505e6d7
 # ╠═71afb541-c7de-40b8-bfa1-6a378ee54a6e
+# ╠═b42d9c27-de31-4f2e-97c4-866d926ea2b6
 # ╠═1708178e-c961-45d4-9dcb-5c763400c95a
+# ╠═4d9fb42f-e7aa-4ffe-983f-4f8e90a1603f
+# ╠═791fc74f-8535-44a4-831e-1a9b041619e2
+# ╠═aaad8512-d634-4cf1-82cd-923a276215fb
 # ╟─d3eea87b-0695-4f39-a8b1-ef943619d094
 # ╠═f05cb0bf-12e1-48b0-9b3a-7d9f34018b6a
 # ╟─6fa6ead0-6512-4a5d-9d37-42876d15adc4
