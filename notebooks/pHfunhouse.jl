@@ -15,13 +15,29 @@ macro bind(def, element)
 end
 
 # ╔═╡ 18d6f3bc-f18e-4e40-9aa4-92d25bb467f6
-using PlutoUI, LaTeXStrings
+
 
 # ╔═╡ 60bc58bb-7c95-484b-a69e-3de41f022f97
 begin
+	import Pkg
+	    ENV["JULIA_MARGO_LOAD_PYPLOT"] = "no thank you"
+	Pkg.activate(mktempdir())
+	Pkg.add([
+	    Pkg.PackageSpec(name="Plots", version="1"),
+	    Pkg.PackageSpec(name="PlutoUI", version="0.7"),
+
+	    Pkg.PackageSpec(name="LaTeXStrings")
+
+
+	    ])
+	    
 	using Plots
+	using PlutoUI
+	using LaTeXStrings
+	
 	plotly()
-end;
+    end;
+
 
 # ╔═╡ a9aa8b20-48a6-11ec-037f-e1686702dd38
 md"""
