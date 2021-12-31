@@ -14,7 +14,7 @@ macro bind(def, element)
     end
 end
 
-# ╔═╡ dbd43667-6b86-4960-adfb-dbbd922a63ea
+# ╔═╡ fe74efb7-5fe3-4bb4-896a-a8ebc8c5a74e
 
 begin
 	import Pkg
@@ -38,17 +38,7 @@ begin
 	plotly()
     end;
 
-# ╔═╡ 5ad96e47-9ca9-493f-b899-a109826953b7
-md"""
-# pH solver en Julia
-
-###### fuertisimamente basado en [pHsolve for python](https://github.com/rnelsonchem/pHcalc/blob/master/pHcalc/pHcalc.py)
-
-"""
-
-
-
-# ╔═╡ d136b0c6-5b94-11ec-01b6-4f5226fe2044
+# ╔═╡ 77dec32e-6a8c-11ec-0c99-bfa1f7fe5392
 begin
 mutable struct Acid
 	ka::Union{Float64,Vector{Float64}}
@@ -133,7 +123,20 @@ end
 end
 	
 
-# ╔═╡ 38c1cace-25cc-4d66-830b-14d3c3aaba6d
+# ╔═╡ 1bd376ba-c267-4585-92cd-dff4a3a6658e
+md"""
+# Comparación de métodos pHcalc y pHfast (con precision .1 y .01)
+
+
+"""
+
+# ╔═╡ f4ac5988-df2d-47eb-a798-031490cf837f
+md"""
+El enfoque de este notebook es comparar los distintos métodos de calcular pH usando la lib pHcalc.jl. La comparacion que se muestra es solamente hecha en cuanto a la precisión, no velocidad. Esto último es porque en Pluto las celdas se ejecutan secuencialmente cuando ocurren cambios que las afectan, entonces no tiene sentido comparar los plots con el mismo set de sliders.
+
+"""
+
+# ╔═╡ c8c17787-3452-41a2-8928-2d37f2016243
 begin
 	fosforico=Acid([7.52e-3,6.23e-8,4.8e-13],.01,0)
 	acetico=Acid(1.8e-5,.001,0)
@@ -142,7 +145,7 @@ begin
 	sistema=System(clorhidrico)
 end;
 
-# ╔═╡ 1e2f4ee6-0ec2-4357-adb5-8ab6c593d8df
+# ╔═╡ f68efe0b-2a45-400f-81be-dfb6c5aabc48
 especies=Dict(
 	:aspartico=>aspartico,
 	:fosforico=>fosforico,
@@ -150,49 +153,7 @@ especies=Dict(
 	:clorhidrico=>clorhidrico
 );
 
-# ╔═╡ f6d249c9-f32a-45ee-be3b-7a4a9764cfb8
-begin
-	phs=1:.1:14
-
-	data=(x->α(fosforico,x)).(phs) |> x->hcat(x...) 
-	# Plots.plot(phs,hcat(data...))
-	p=Plots.plot()
-	for i in 1:length(fosforico.charge)
-		Plots.plot!(p, phs, data[i,:], label="especie $i")
-		title!(p, "Diagrama de distribución de especies de H3PO4")
-		xlabel!(p, "pH")
-		ylabel!(p, "Fracción de Concentración")
-	
-		println(i)
-	end
-	for (i,pKa) in enumerate(fosforico.pKA)
-		vline!(p, [pKa], label=:false)
-end
-	p
-end
-
-# ╔═╡ 635d433f-482d-45a9-a6fa-ab3b87b4b092
-
-md"""
-
-Sustancia a titular $(@bind esp Select(especies|> keys |> collect))
-
-
-"""
-
-# ╔═╡ 11691744-7892-4ac7-874b-e0c5dfb3c932
-md"""
-Concentración de titulante (M): $(@bind conc_na Slider(LinRange(.1,.5,50), default=0.1, show_value=true);)\
-
-Volumen de ácido a titular (ml): $(@bind vol_erlen Slider(5:20, default = 10, show_value = true);)\
-
-Concentración molar del Ácido (M): $(@bind conc_ac Slider(LinRange(.1,.5,50), show_value = true);)\
-
-
-$(@bind tuki Button("Graficar!"))
-"""
-
-# ╔═╡ 7b51c5c1-88e1-418b-851f-b728cc1a6a44
+# ╔═╡ 9ea0cec9-acaa-4c12-a0af-5e352304e79f
 function pde(acido::T, conc_na, vol_erlen)
 	times= typeof(acido) == Acid ? length(acido.ka) : 1 #Un acido fuerte solo puede perder un protón en ppio.
 	vol = (chr -> (acido.conc * vol_erlen * chr)/conc_na)(collect(1:times))
@@ -203,7 +164,22 @@ function pde(acido::T, conc_na, vol_erlen)
 	vol,pH
 end;
 
-# ╔═╡ 8e603414-5e4f-42c6-bb0c-63538016c50d
+# ╔═╡ d3e4683a-9d8e-4375-b621-089863dac270
+
+md"""
+
+Sustancia a titular $(@bind esp Select(especies|> keys |> collect))
+
+Concentración de titulante (M): $(@bind conc_na Slider(LinRange(.1,.5,50), default=0.1, show_value=true);)\
+
+Volumen de ácido a titular (ml): $(@bind vol_erlen Slider(5:20, default = 10, show_value = true);)\
+
+Concentración molar del Ácido (M): $(@bind conc_ac Slider(LinRange(.1,.5,50), show_value = true);)\
+
+
+"""
+
+# ╔═╡ 7d468210-f0e5-482b-8891-d993582b24b7
 begin
 	resolucion=60		
 	# fosforico_tit=Acid([7.52e-3,6.23e-8,4.8e-13],conc_ac,0)
@@ -213,65 +189,35 @@ begin
 	vols_en_erlen=vol_erlen .+ vols_agregados
 	concs_en_erlen=(conc_na*cumsum(vols_agregados)) ./ vols_en_erlen
 	pdes=pde(sustancia, conc_na, vol_erlen)
-	pHsas=(x-> Neutral(1,x) |> x-> System(sustancia, x)|> x-> pHfast(x,.1)).(concs_en_erlen);
+	phfast01=(x-> Neutral(1,x) |> x-> System(sustancia, x)|> x-> pHfast(x,.1)).(concs_en_erlen);
+	phfast001=	phfast01=(x-> Neutral(1,x) |> x-> System(sustancia, x)|> x-> pHfast(x,.01)).(concs_en_erlen);
+	phcalc=	phfast01=(x-> Neutral(1,x) |> x-> System(sustancia, x)|> pHsolve).(concs_en_erlen);
 end;
 
-# ╔═╡ 1708178e-c961-45d4-9dcb-5c763400c95a
+# ╔═╡ d34796b1-bd57-41e5-98ca-9d7de782ce2b
 begin
-	tuki
-	p2=Plots.scatter(vols_agregados ,pHsas,label=:false)
-	Plots.plot!(p2,vols_agregados ,pHsas, label=:false )
-	Plots.scatter!(pdes, label=:false)
-	xlabel!(p2,"Vol. NaOH")
-	ylabel!("pH")
-	title!("Titulación de Ácido $(esp) con NaOH")
-	# Plots.savefig(p2,"falopa.png")
-	p2;
-	# png("faLoPa")
-	# p2
-end;
-
-# ╔═╡ 4d9fb42f-e7aa-4ffe-983f-4f8e90a1603f
-begin
-	tuki
-	p5=Plots.scatter(vols_agregados ,pHsas,label=:false)
-	Plots.plot!(vols_agregados ,pHsas, label="fast" )
+	p=Plots.scatter(vols_agregados ,phfast01,label="fast 0.1")
+	Plots.scatter!(vols_agregados ,phfast001,label="fast 0.01")
+	Plots.scatter!(vols_agregados, phcalc, label="metodo completo")
+	Plots.plot!(vols_agregados ,phfast01, label=:false)
+	Plots.plot!(vols_agregados ,phfast001, label=:false)
+	Plots.plot!(vols_agregados ,phcalc, label=:false)
+	
 	Plots.scatter!(pdes, label=:false)
 	xlabel!("Vol. NaOH")
 	ylabel!("pH")
 	title!("Titulación de Ácido $(esp) con NaOH")
-	# Plots.savefig(p2,"falopa.png")
-	p5;
-	# png("faLoPa")
-	# p2
+	p;
 end
-
-# ╔═╡ d3eea87b-0695-4f39-a8b1-ef943619d094
-@bind axa Select(especies |> keys |> collect)
-
-# ╔═╡ f05cb0bf-12e1-48b0-9b3a-7d9f34018b6a
-begin
-	arr=1:.1:14
-	p3 = (x-> α(especies[axa], x)).(arr) |> x->  hcat(x...) |> transpose |> x-> Plots.plot(arr,x, legend=:false)
-	for pka ∈ especies[axa].pKA
-		vline!([pka])
-	end
-	p3
-end
-
 
 # ╔═╡ Cell order:
-# ╟─5ad96e47-9ca9-493f-b899-a109826953b7
-# ╟─dbd43667-6b86-4960-adfb-dbbd922a63ea
-# ╟─d136b0c6-5b94-11ec-01b6-4f5226fe2044
-# ╟─38c1cace-25cc-4d66-830b-14d3c3aaba6d
-# ╟─1e2f4ee6-0ec2-4357-adb5-8ab6c593d8df
-# ╟─f6d249c9-f32a-45ee-be3b-7a4a9764cfb8
-# ╟─635d433f-482d-45a9-a6fa-ab3b87b4b092
-# ╟─11691744-7892-4ac7-874b-e0c5dfb3c932
-# ╟─7b51c5c1-88e1-418b-851f-b728cc1a6a44
-# ╟─8e603414-5e4f-42c6-bb0c-63538016c50d
-# ╟─1708178e-c961-45d4-9dcb-5c763400c95a
-# ╟─4d9fb42f-e7aa-4ffe-983f-4f8e90a1603f
-# ╟─d3eea87b-0695-4f39-a8b1-ef943619d094
-# ╟─f05cb0bf-12e1-48b0-9b3a-7d9f34018b6a
+# ╟─fe74efb7-5fe3-4bb4-896a-a8ebc8c5a74e
+# ╟─77dec32e-6a8c-11ec-0c99-bfa1f7fe5392
+# ╟─1bd376ba-c267-4585-92cd-dff4a3a6658e
+# ╟─f4ac5988-df2d-47eb-a798-031490cf837f
+# ╟─c8c17787-3452-41a2-8928-2d37f2016243
+# ╟─f68efe0b-2a45-400f-81be-dfb6c5aabc48
+# ╟─9ea0cec9-acaa-4c12-a0af-5e352304e79f
+# ╟─d3e4683a-9d8e-4375-b621-089863dac270
+# ╟─7d468210-f0e5-482b-8891-d993582b24b7
+# ╟─d34796b1-bd57-41e5-98ca-9d7de782ce2b
