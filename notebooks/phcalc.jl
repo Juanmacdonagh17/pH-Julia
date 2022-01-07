@@ -26,15 +26,11 @@ begin
 	    Pkg.PackageSpec(name="LaTeXStrings"),
 	    Pkg.PackageSpec(name="Unitful"),
 	    Pkg.PackageSpec(name="DataFrames"),
-		 Pkg.PackageSpec(name="Statistics")
+		 Pkg.PackageSpec(name="Statistics"),
+		Pkg.PackageSpec(url="https://github.com/egonik-unlp/PHcalc.jl")
 	    ])
 	    
-	using Plots
-	using Statistics
-	using PlutoUI
-	using LaTeXStrings
-	using Optim
-	using DataFrames
+	using Plots, Statistics, PlutoUI, LaTeXStrings, Optim, DataFrames, PHcalc
 	plotly()
     end;
 
@@ -47,91 +43,6 @@ md"""
 """
 
 
-
-# ╔═╡ d136b0c6-5b94-11ec-01b6-4f5226fe2044
-begin
-mutable struct Acid
-	ka::Union{Float64,Vector{Float64}}
-	conc::Float64
-	charge::Vector{Int64}
-	pKA::Vector{Float64}
-	_ka::Vector{Float64}
-	function Acid(ka, conc, charge::Int64)
-			if typeof(ka) <: Number
-				ka=[ka]
-			end
-
-			_ka=copy(ka)
-			sort!(ka, rev=:true)
-			prepend!(_ka,1.)
-			charge=charge:-1:charge-(length(ka)) |> collect
-			# charge=LinRange(charge,-length(ka), length(ka))
-			new(ka, conc,charge , -log10.(ka),_ka )
-		end
-end
-	
-mutable struct Neutral
-	charge::Union{Vector{Int64},Int64}
-	conc::Float64
-end
-	
-struct System
-	species
-	function System(species...)
-		new(species)
-	end
-end
-
-function α(self::Acid,pH) # solo para un valor de pH, se podria pensar para un array de pHs.
-		h3o=10.0^(-pH)
-		power=length(self._ka)-1:-1:0
-		h3o_power=(x->h3o^x).(power)
-		Ka_prod=cumprod(self._ka)
-		h3o_Ka=h3o_power.*(Ka_prod)
-		h3o_Ka./sum(h3o_Ka)
-	end
-
-function α(self::Neutral,pH) # Devielve 1 porque no tiene disociacion, devuelvo en array para que se parezca a la otra implementación.
-	[1]
-end
-
-
-function pHfast(sys, precision=.01)
-	function minimise(pH)
-		h3o=10.0^(-pH)
-     	oh = (10.0^(-14))/h3o
-	 	x = (h3o - oh)
-		for specie in sys.species
-			x+=(specie.conc.*specie.charge.*α(specie,pH))|> sum
-		end
-	 	abs(x)
-	end
-	phv=1:precision:14
-	minimise.(phv) |> argmin |> x -> getindex(phv,x) 
-		
-end
-	
-function pHsolve(sys)
-	function minimise(pH)
-		h3o=10.0^(-pH)
-     	oh = (10.0^(-14))/h3o
-	 	x = (h3o - oh)
-		for specie in sys.species
-			x+=(specie.conc.*specie.charge.*α(specie,pH))|> sum
-		end
-	 	abs(x)
-	end
-	
-	function phguess()
-		phv=1:1.:14
-		minimise.(phv) |> argmin |> x -> getindex(phv, x)
-	end
-	guess=phguess()
-	optimize(x->minimise(first(x)), [guess], BFGS()).minimizer |> first
-end
-	T=Union{Acid, Neutral}
-end
-	
 
 # ╔═╡ 38c1cace-25cc-4d66-830b-14d3c3aaba6d
 begin
@@ -193,7 +104,7 @@ $(@bind tuki Button("Graficar!"))
 """
 
 # ╔═╡ 7b51c5c1-88e1-418b-851f-b728cc1a6a44
-function pde(acido::T, conc_na, vol_erlen)
+function pde(acido::T, conc_na, vol_erlen) where T<: Union{Acid, Neutral}
 	times= typeof(acido) == Acid ? length(acido.ka) : 1 #Un acido fuerte solo puede perder un protón en ppio.
 	vol = (chr -> (acido.conc * vol_erlen * chr)/conc_na)(collect(1:times))
 	pH = map(1:times) do t
@@ -211,24 +122,9 @@ begin
 	sustancia.conc=conc_ac
 	vols_agregados=LinRange(.1,vol_erlen+5,resolucion)      #0.0001:.2:vol_erlen+5
 	vols_en_erlen=vol_erlen .+ vols_agregados
-	concs_en_erlen=(conc_na*cumsum(vols_agregados)) ./ vols_en_erlen
+	concs_en_erlen=(conc_na*vols_agregados) ./ vols_en_erlen
 	pdes=pde(sustancia, conc_na, vol_erlen)
 	pHsas=(x-> Neutral(1,x) |> x-> System(sustancia, x)|> x-> pHfast(x,.1)).(concs_en_erlen);
-end;
-
-# ╔═╡ 1708178e-c961-45d4-9dcb-5c763400c95a
-begin
-	tuki
-	p2=Plots.scatter(vols_agregados ,pHsas,label=:false)
-	Plots.plot!(p2,vols_agregados ,pHsas, label=:false )
-	Plots.scatter!(pdes, label=:false)
-	xlabel!(p2,"Vol. NaOH")
-	ylabel!("pH")
-	title!("Titulación de Ácido $(esp) con NaOH")
-	# Plots.savefig(p2,"falopa.png")
-	p2;
-	# png("faLoPa")
-	# p2
 end;
 
 # ╔═╡ 4d9fb42f-e7aa-4ffe-983f-4f8e90a1603f
@@ -240,10 +136,7 @@ begin
 	xlabel!("Vol. NaOH")
 	ylabel!("pH")
 	title!("Titulación de Ácido $(esp) con NaOH")
-	# Plots.savefig(p2,"falopa.png")
 	p5;
-	# png("faLoPa")
-	# p2
 end
 
 # ╔═╡ d3eea87b-0695-4f39-a8b1-ef943619d094
@@ -262,16 +155,14 @@ end
 
 # ╔═╡ Cell order:
 # ╟─5ad96e47-9ca9-493f-b899-a109826953b7
-# ╟─dbd43667-6b86-4960-adfb-dbbd922a63ea
-# ╟─d136b0c6-5b94-11ec-01b6-4f5226fe2044
-# ╟─38c1cace-25cc-4d66-830b-14d3c3aaba6d
-# ╟─1e2f4ee6-0ec2-4357-adb5-8ab6c593d8df
+# ╠═dbd43667-6b86-4960-adfb-dbbd922a63ea
+# ╠═38c1cace-25cc-4d66-830b-14d3c3aaba6d
+# ╠═1e2f4ee6-0ec2-4357-adb5-8ab6c593d8df
 # ╟─f6d249c9-f32a-45ee-be3b-7a4a9764cfb8
-# ╟─635d433f-482d-45a9-a6fa-ab3b87b4b092
-# ╟─11691744-7892-4ac7-874b-e0c5dfb3c932
-# ╟─7b51c5c1-88e1-418b-851f-b728cc1a6a44
-# ╟─8e603414-5e4f-42c6-bb0c-63538016c50d
-# ╟─1708178e-c961-45d4-9dcb-5c763400c95a
+# ╠═635d433f-482d-45a9-a6fa-ab3b87b4b092
+# ╠═11691744-7892-4ac7-874b-e0c5dfb3c932
+# ╠═7b51c5c1-88e1-418b-851f-b728cc1a6a44
+# ╠═8e603414-5e4f-42c6-bb0c-63538016c50d
 # ╟─4d9fb42f-e7aa-4ffe-983f-4f8e90a1603f
 # ╟─d3eea87b-0695-4f39-a8b1-ef943619d094
 # ╟─f05cb0bf-12e1-48b0-9b3a-7d9f34018b6a
