@@ -27,10 +27,11 @@ begin
 	    Pkg.PackageSpec(name="Unitful"),
 	    Pkg.PackageSpec(name="DataFrames"),
 		 Pkg.PackageSpec(name="Statistics"),
-		Pkg.PackageSpec(url="https://github.com/egonik-unlp/PHcalc.jl")
+		Pkg.PackageSpec(name="PHcalc"),
+		Pkg.PackageSpec(name="OrderedCollections")
 	    ])
 	    
-	using Plots, Statistics, PlutoUI, LaTeXStrings, Optim, DataFrames, PHcalc
+	using Plots, Statistics, PlutoUI, LaTeXStrings, Optim, DataFrames, PHcalc, OrderedCollections
 	plotly()
     end;
 
@@ -63,24 +64,59 @@ begin
 		:acetico=>acetico,
 		:clorhidrico=>clorhidrico
 	);
+	Indicadores=OrderedDict(
+	"Fenolftaleína"=>
+Dict(
+		:viraje=> [10,8.2],
+		:colores=>[:pink,:whitesmoke]
+),
+	"Naranja de metilo"=>
+	Dict(
+		:viraje=>[4.4,3.1],
+		:colores=>[:red,:yellow]
+	),
+	"Alizarina"=>
+	Dict(
+		:viraje=>[12.4,11],
+		:colores=>[:red,:yellow]
+	),
+	"Rojo de cresol"=>
+	Dict(
+		:viraje=>[8.8,7],
+		:colores=>[:yellow,:red]
+	),
+	"Violeta de metilo"=>
+	Dict(
+		:viraje=>[1.6,.2],
+		:colores=>[:blueviolet,:yellow]
+	),
+		:Ninguno=>Nothing
+)
+
 	
-	function pde(acido::T, conc_na, vol_ac) where T<: Union{Acid, Neutral}
+	function pde(acido::T, conc_na, vol_ac) where T <: Union{Acid, Neutral}
 		times= typeof(acido) == Acid ? length(acido.ka) : 1 #Un acido fuerte solo puede perder un protón en ppio.
 		vol = (chr -> (acido.conc * vol_ac * chr)/conc_na)(collect(1:times))
 		conc_ac=acido.conc
 		# Chr representa las distintas cargas que puede tener un ácido poliprótico, por ejemplo para Ácido fosfórico, las concentraciones de los puntos de equivalencia deberían ser obtenerse multiplicando [1,2,3]*Concentración_base*volumen_base
-		pH = map(1:times) do t
-			println(t)
-			acido.conc = (conc_ac * vol_ac )/ (vol[t] + vol_ac)
-			base=Neutral(1, t* ((conc_na*vol[t])/(vol[t] + vol_ac))  )
+		pH = map( vol ) do v
+			acido.conc = ( conc_ac * vol_ac ) / ( v + vol_ac ) # a)
+			base=Neutral(+1, #carga
+				 ( ( conc_na * v )/( v + vol_ac ) )  #b)
+			)
 			System(acido, base) |> s -> pHfast(s,.1)
 		end
+		
 		(
 			vol=vol,
-		 	ph=pH
+		 	pH=pH
 		)
+
 	end
 end;
+
+
+#en a) y b) corrijo por dilución 
 
 # ╔═╡ 5052e33a-687b-43e4-8437-b8fe392cea87
 md"""
@@ -92,7 +128,7 @@ Para la curva de titulación partimos de los siguientes parámetros:
 
 $V_{acido}, C_{acido}, C_{base}$
 
-Además de $V_{base}$ que se calcula como $2 \ * \ V_{acido}$
+Además de $V_{base}$ que se calcula como $3.\dfrac{C_{acido}.V_{acido}}{C_{base}}$
 
 A partir de eso se generan los siguientes vectores:
 
@@ -103,14 +139,14 @@ $\begin{align}
  \\
  \\
 
-	\mathbf{C_{base}} \rightarrow & \ \dfrac{C_{base} * \mathbf{V_{ag, base}} }{\mathbf{V_{a}} + V_{acido} } 
+	\mathbf{C_{base}} \rightarrow & \ \dfrac{C_{base} * \mathbf{V_{ag, base}} }{\mathbf{V_{ag, base}} + V_{acido} } 
 
 \\
 
 \\
 
 
-	\mathbf{C_{acido}} \rightarrow & \ \dfrac{C_{acido} * V_{acido} }{\mathbf{V_{a}} + V_{acido} } 
+	\mathbf{C_{acido}} \rightarrow & \ \dfrac{C_{acido} * V_{acido} }{\mathbf{V_{ag, base}} + V_{acido} } 
 
 \end{align}$
 
@@ -170,7 +206,7 @@ El pH se calcula de forma similar al caso anterior
 		end
 		(
 			vol=vol,
-		 	ph=pH
+		 	pH=pH
 		)
 	end
 end;
@@ -181,9 +217,6 @@ end;
 
 
 """
-
-
-# ╔═╡ fb447f65-faa0-4e43-9e19-6319dd0ca014
 
 
 # ╔═╡ f56b3295-d66c-4fbd-ba83-4c54e9d6e871
@@ -197,6 +230,9 @@ Concentración de titulante (M): $(@bind conc_na Slider(LinRange(.1,.5,50), defa
 Volumen de ácido a titular (ml): $(@bind vol_ac Slider(5:20, default = 10, show_value = true);)\
 
 Concentración molar del Ácido (M): $(@bind conc_ac Slider(LinRange(.1,.5,50), show_value = true);)\
+\
+
+Indicador: $(@bind ind Select(collect(keys(Indicadores))))
 
 """
 
@@ -223,8 +259,16 @@ end;
 
 # ╔═╡ e9ae7938-e4cf-4a28-932e-5b956436b53d
 begin
-	scatter(vol_agregados,pH)
-	scatter!(punto_de_equivalencia.vol, punto_de_equivalencia.ph)
+	p = scatter(vol_agregados,pH, legend=:false)
+	plot!(vol_agregados, pH, label=:false)
+	scatter!(punto_de_equivalencia.vol, punto_de_equivalencia.pH, markershape=:hexagon, markersize=10,markercolor=:green)
+	indicador=Indicadores[ind]
+	if ind ≠ :Ninguno
+		hline!([indicador[:viraje][1]], color = indicador[:colores][1], width = 2)
+		hline!([indicador[:viraje][2]], color = indicador[:colores][2], width = 2)
+	end
+	xlabel!("Volumen NaOH")
+	ylabel!("pH")
 end
 
 # ╔═╡ Cell order:
@@ -233,7 +277,6 @@ end
 # ╟─971751a5-b338-4e2a-80bd-c59e76ff3734
 # ╟─ca743222-5da5-46d3-bfcd-53fab31acd8c
 # ╟─5052e33a-687b-43e4-8437-b8fe392cea87
-# ╠═fb447f65-faa0-4e43-9e19-6319dd0ca014
 # ╟─f56b3295-d66c-4fbd-ba83-4c54e9d6e871
-# ╠═36d23bf8-99ce-41f9-84d0-d59da6ab44b5
+# ╟─36d23bf8-99ce-41f9-84d0-d59da6ab44b5
 # ╠═e9ae7938-e4cf-4a28-932e-5b956436b53d
