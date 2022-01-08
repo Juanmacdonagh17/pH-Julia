@@ -36,9 +36,16 @@ begin
     end;
 
 # ╔═╡ 4de35c9b-29bb-4e62-88d0-3e426df2aea5
-md"""
-$\require{mhchem}$
-""";
+begin
+	md"""
+	$\require{mhchem}$
+	""";
+	html"""<style>
+main {
+    max-width: 1500px;
+}
+"""
+end
 
 # ╔═╡ 971751a5-b338-4e2a-80bd-c59e76ff3734
 md"""
@@ -259,9 +266,9 @@ end;
 
 # ╔═╡ e9ae7938-e4cf-4a28-932e-5b956436b53d
 begin
-	p = scatter(vol_agregados,pH, legend=:false)
+	p = scatter(vol_agregados,pH, legend=:false, size= (1000,600))
 	plot!(vol_agregados, pH, label=:false)
-	scatter!(punto_de_equivalencia.vol, punto_de_equivalencia.pH, markershape=:hexagon, markersize=10,markercolor=:green)
+	scatter!(punto_de_equivalencia.vol, punto_de_equivalencia.pH, markershape=:hexagon, markersize=12 ,markercolor=:green)
 	indicador=Indicadores[ind]
 	if ind ≠ :Ninguno
 		hline!([indicador[:viraje][1]], color = indicador[:colores][1], width = 2)
@@ -279,4 +286,4 @@ end
 # ╟─5052e33a-687b-43e4-8437-b8fe392cea87
 # ╟─f56b3295-d66c-4fbd-ba83-4c54e9d6e871
 # ╟─36d23bf8-99ce-41f9-84d0-d59da6ab44b5
-# ╠═e9ae7938-e4cf-4a28-932e-5b956436b53d
+# ╟─e9ae7938-e4cf-4a28-932e-5b956436b53d
