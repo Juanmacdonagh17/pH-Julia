@@ -1,0 +1,9 @@
+version: "3"
+
+
+services:
+  phfunhouse:
+    image: egonik/phfunhouse:funcional
+    ports:
+      - 8888:1234
+
