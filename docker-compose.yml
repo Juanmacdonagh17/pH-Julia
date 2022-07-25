@@ -5,7 +5,7 @@ services:
     image: jwilder/nginx-proxy
     restart: always
     ports:
-      - "80:1234"
+      - "80:80"
       - "443:443"
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
@@ -27,11 +27,13 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
 
   phfunhouse:
-    image: egonik/phfunhouse:light
+    build: .
     restart: always
+    expose:
+      - "80"
     environment:
-      - VIRTUAL_HOST=plutofunhouse.studio,www.plutofunhouse.studio
-      - LETSENCRYPT_HOST=plutofunhouse.studio,www.plutofunhouse.studio
+      - VIRTUAL_HOST=phfunhouse.tk,www.phfunhouse.tk
+      - LETSENCRYPT_HOST=phfunhouse.tk,www.phfunhouse.tk
       - LETSENCRYPT_EMAIL=gonik@quimica.unlp.edu.ar
     depends_on:
       - nginx-proxy
