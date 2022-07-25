@@ -6,7 +6,6 @@
 # Take a look at https://github.com/JuliaPluto/PlutoSliderServer.jl for more info.
 
 # -fonsi
-
 FROM julia:1.7-buster
 
 # HTTP port

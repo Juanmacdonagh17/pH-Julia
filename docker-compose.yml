@@ -1,9 +1,42 @@
-version: "3"
-
+version: '3'
 
 services:
-  phfunhouse:
-    image: egonik/phfunhouse:funcional
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    restart: always
     ports:
-      - 8888:1234
+      - "80:1234"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - certs:/etc/nginx/certs:ro
+      - vhostd:/etc/nginx/vhost.d
+      - html:/usr/share/nginx/html
+    labels:
+      - com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy
 
+  letsencrypt:
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    restart: always
+    environment:
+      - NGINX_PROXY_CONTAINER=nginx-proxy
+    volumes:
+      - certs:/etc/nginx/certs:rw
+      - vhostd:/etc/nginx/vhost.d
+      - html:/usr/share/nginx/html
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+  phfunhouse:
+    image: egonik/phfunhouse:light
+    restart: always
+    environment:
+      - VIRTUAL_HOST=plutofunhouse.studio,www.plutofunhouse.studio
+      - LETSENCRYPT_HOST=plutofunhouse.studio,www.plutofunhouse.studio
+      - LETSENCRYPT_EMAIL=gonik@quimica.unlp.edu.ar
+    depends_on:
+      - nginx-proxy
+      - letsencrypt
+volumes: 
+  certs:
+  html:
+  vhostd:
