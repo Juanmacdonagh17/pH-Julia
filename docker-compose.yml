@@ -38,6 +38,40 @@ services:
     depends_on:
       - nginx-proxy
       - letsencrypt
+  tstu:
+    image: nginx
+    restart: always
+    expose:
+      - "80"
+    volumes:
+      - /home/eduardogonik/html:/usr/share/nginx/html:ro
+
+    environment:
+      - VIRTUAL_HOST=phfunhouse.ml,www.phfunhouse.ml
+      - LETSENCRYPT_HOST=phfunhouse.ml,www.phfunhouse.ml
+      - LETSENCRYPT_EMAIL=gonik@quimica.unlp.edu.ar
+    depends_on:
+      - nginx-proxy
+      - letsencrypt
+  
+  tstu2:
+    image: nginx
+    restart: always
+    expose:
+      - "80"
+    volumes:
+      - /home/eduardogonik/html:/usr/share/nginx/html:ro
+
+    environment:
+      - VIRTUAL_HOST=tst.phfunhouse.ml,www.tst.phfunhouse.ml
+    depends_on:
+      - nginx-proxy
+      - letsencrypt
+
+
+
+
+
 volumes: 
   certs:
   html:
