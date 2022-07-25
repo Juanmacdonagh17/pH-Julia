@@ -44,7 +44,7 @@ services:
     expose:
       - "80"
     volumes:
-      - /home/eduardogonik/html:/usr/share/nginx/html:ro
+      - /home/eduardogonik/pH-Julia/html:/usr/share/nginx/html:ro
 
     environment:
       - VIRTUAL_HOST=phfunhouse.ml,www.phfunhouse.ml
@@ -60,7 +60,7 @@ services:
     expose:
       - "80"
     volumes:
-      - /home/eduardogonik/html:/usr/share/nginx/html:ro
+      - /home/eduardogonik/pH-Julia/html:/usr/share/nginx/html:ro
 
     environment:
       - VIRTUAL_HOST=tst.phfunhouse.ml,www.tst.phfunhouse.ml
