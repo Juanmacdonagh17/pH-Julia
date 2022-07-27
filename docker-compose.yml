@@ -3,7 +3,7 @@ version: '3'
 services:
   nginx-proxy:
     image: jwilder/nginx-proxy
-    restart: always
+    restart: unless-stopped
     ports:
       - "80:80"
       - "443:443"
@@ -28,19 +28,19 @@ services:
 
   phfunhouse:
     build: .
-    restart: always
+    restart: unless-stopped
     expose:
       - "80"
     environment:
-      - VIRTUAL_HOST=phfunhouse.tk,www.phfunhouse.tk
-      - LETSENCRYPT_HOST=phfunhouse.tk,www.phfunhouse.tk
+      - VIRTUAL_HOST=phfh.tk,www.phfh.tk
+      - LETSENCRYPT_HOST=phfh.tk,www.phfh.tk
       - LETSENCRYPT_EMAIL=gonik@quimica.unlp.edu.ar
     depends_on:
       - nginx-proxy
       - letsencrypt
   tstu:
     image: nginx
-    restart: always
+    restart: unless-stopped
     expose:
       - "80"
     volumes:
@@ -56,7 +56,7 @@ services:
   
   tstu2:
     image: nginx
-    restart: always
+    restart: unless-stopped
     expose:
       - "80"
     volumes:
