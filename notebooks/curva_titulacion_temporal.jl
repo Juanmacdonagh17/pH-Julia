@@ -101,7 +101,7 @@ Dict(
 )
 
 	
-	function pde(acido::T, conc_na, vol_ac) where T <: Union{Acid, Neutral}
+	function pde(acido :: AbstractSpecies, conc_na, vol_ac)
 		times= typeof(acido) == Acid ? length(acido.ka) : 1 #Un acido fuerte solo puede perder un protón en ppio.
 		vol = (chr -> (acido.conc * vol_ac * chr)/conc_na)(collect(1:times))
 		conc_ac=acido.conc
