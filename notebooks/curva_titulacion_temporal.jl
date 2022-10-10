@@ -166,13 +166,18 @@ De forma general, podemos expresar la función de la siguiente manera:
 
 $$\text{pH}_{V_x}=-\log{\Bigg(\dfrac{(\text{moles }H^{+}_{x-1}-\text{moles }{OH}^-_{1})*(V_{x-1}+V_{x(\text{NaOH})})}{1000\text{ml}}\Bigg)}$$
 
-Con esto ya tenemos (casi) todo lo necesario para armar nuestra función. Los parametros a usar van a ser:\
+Con esto ya tenemos. todo lo necesario para armar nuestra función. Los parametros a usar van a ser:\
 
 1) Concentración inicial del titulante
 2) Volumen de ácido 
 3) Concentración inicial de Ácido
 
 
+Además, en un gráfico de pH vs volumen de base, podemos encontrar el  punto de equivalencia (o los distintos puntos de equivalencia, en el caso de los ácidos poliproticos). Este es el punto en el que  el volumen de titulante corresponde a una concentración de oxhidrilos es igual a la de protones. En el caso de los ácidos polipróticos, los puntos de equivalencia son multiplos del primer punto de equivalencia:
+
+$$\ce{H+= OH-}$$
+
+Con todo esto podemos pasar a los gráficos:
 """
 
 
