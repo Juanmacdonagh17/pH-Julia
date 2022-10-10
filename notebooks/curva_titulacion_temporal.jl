@@ -37,6 +37,14 @@ using Suppressor
 	plotly()
     end;
 
+# ╔═╡ 971751a5-b338-4e2a-80bd-c59e76ff3734
+md"""
+
+# Curva de titulación
+
+
+"""
+
 # ╔═╡ 4de35c9b-29bb-4e62-88d0-3e426df2aea5
 begin
 	md"""
@@ -48,17 +56,6 @@ main {
 }
 """
 end
-
-# ╔═╡ 971751a5-b338-4e2a-80bd-c59e76ff3734
-md"""
-
-# Curva de titulación
-
-
-
-Cree esta notebook explicando el código de la curva de titulación que no me doy cuenta que problema tiene, pero me parece que está dando mal. También está el código para calcular los puntos de equivalencia, que todavía no me fijé si está andando bien
-
-"""
 
 # ╔═╡ ca743222-5da5-46d3-bfcd-53fab31acd8c
 begin
@@ -130,7 +127,7 @@ end;
 # ╔═╡ 5052e33a-687b-43e4-8437-b8fe392cea87
 md"""
 
-### Curva de titulación
+## Explicación teórica:
 
 Para la curva de titulación partimos de los siguientes parámetros:
 
@@ -164,7 +161,7 @@ El pH se calcula a partir de vectorizar el uso de la función `pHfast` de la lib
 
 \
 
-### Punto de equivalencia
+### Punto de equivalencia:
 
 Para calcular el/los volumenes de punto de equivalencia se parte de:
 
@@ -192,10 +189,15 @@ Ahora entonces el volumen es un vector, no un escalar.
 
 
 
-El pH se calcula de forma similar al caso anterior
+El pH se calcula de forma similar al caso anterior.
 
 """
 
+
+# ╔═╡ a181e191-ec53-49f3-b122-87aa80a73074
+md"""
+## Parámetros a graficar:
+"""
 
 # ╔═╡ f56b3295-d66c-4fbd-ba83-4c54e9d6e871
 md"""
@@ -235,6 +237,11 @@ begin
 	end
 end;
 
+# ╔═╡ 371acdab-ee5e-4adc-b373-87c3fe78e8af
+md"""
+## Gráfico:
+"""
+
 # ╔═╡ e9ae7938-e4cf-4a28-932e-5b956436b53d
 begin
 	p = scatter(vol_agregados,pH, legend=:false, size= (1000,600))
@@ -249,13 +256,25 @@ begin
 	ylabel!("pH")
 end
 
+# ╔═╡ fe6e663b-3444-4b0f-9b1f-b3694aaec3e5
+TableOfContents(title="Curva de titulación Ácido Base 🎢")
+
+# ╔═╡ 4cd4972b-6886-4217-a4a8-42527f253e49
+md"""
+Desarrollado por Eduardo Gonik y Juan Mac Donagh. UNLP, Facultad de Ciencias Exactas, 2022.
+"""
+
 # ╔═╡ Cell order:
+# ╟─971751a5-b338-4e2a-80bd-c59e76ff3734
 # ╟─de7b7965-00e6-499d-8797-8588c4cda3ea
 # ╟─4969064a-6f6d-11ec-1d9e-db3f5da90e7e
 # ╟─4de35c9b-29bb-4e62-88d0-3e426df2aea5
-# ╟─971751a5-b338-4e2a-80bd-c59e76ff3734
 # ╟─ca743222-5da5-46d3-bfcd-53fab31acd8c
 # ╟─5052e33a-687b-43e4-8437-b8fe392cea87
+# ╟─a181e191-ec53-49f3-b122-87aa80a73074
 # ╟─f56b3295-d66c-4fbd-ba83-4c54e9d6e871
 # ╟─36d23bf8-99ce-41f9-84d0-d59da6ab44b5
+# ╟─371acdab-ee5e-4adc-b373-87c3fe78e8af
 # ╟─e9ae7938-e4cf-4a28-932e-5b956436b53d
+# ╟─fe6e663b-3444-4b0f-9b1f-b3694aaec3e5
+# ╟─4cd4972b-6886-4217-a4a8-42527f253e49
