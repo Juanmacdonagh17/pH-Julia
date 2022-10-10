@@ -68,10 +68,10 @@ begin
 	aspartico=Acid((x-> 10^-x).([2.09,9.82,3.86]),0.06, 1)
 	sistema=System(clorhidrico)
 	especies=Dict(
-		:aspartico=>aspartico,
-		:fosforico=>fosforico,
-		:acetico=>acetico,
-		:clorhidrico=>clorhidrico
+		:Aspártico=>aspartico,
+		:Fosfórico=>fosforico,
+		:Acético=>acetico,
+		:Clorhídrico=>clorhidrico
 	);
 	Indicadores=OrderedDict(
 	"Fenolftaleína"=>
@@ -232,7 +232,7 @@ end;
 md"""
 
 
-Sustancia a titular $(@bind esp Select(especies|> keys |> collect))
+Ácido a titular $(@bind esp Select(especies|> keys |> collect))
 
 Concentración de titulante (M): $(@bind conc_na Slider(LinRange(.1,.5,50), default=0.1, show_value=true);)\
 
@@ -281,12 +281,12 @@ begin
 end
 
 # ╔═╡ Cell order:
-# ╠═de7b7965-00e6-499d-8797-8588c4cda3ea
-# ╠═4969064a-6f6d-11ec-1d9e-db3f5da90e7e
-# ╠═4de35c9b-29bb-4e62-88d0-3e426df2aea5
+# ╟─de7b7965-00e6-499d-8797-8588c4cda3ea
+# ╟─4969064a-6f6d-11ec-1d9e-db3f5da90e7e
+# ╟─4de35c9b-29bb-4e62-88d0-3e426df2aea5
 # ╟─971751a5-b338-4e2a-80bd-c59e76ff3734
-# ╟─ca743222-5da5-46d3-bfcd-53fab31acd8c
-# ╟─5052e33a-687b-43e4-8437-b8fe392cea87
-# ╟─f56b3295-d66c-4fbd-ba83-4c54e9d6e871
-# ╟─36d23bf8-99ce-41f9-84d0-d59da6ab44b5
-# ╟─e9ae7938-e4cf-4a28-932e-5b956436b53d
+# ╠═ca743222-5da5-46d3-bfcd-53fab31acd8c
+# ╠═5052e33a-687b-43e4-8437-b8fe392cea87
+# ╠═f56b3295-d66c-4fbd-ba83-4c54e9d6e871
+# ╠═36d23bf8-99ce-41f9-84d0-d59da6ab44b5
+# ╠═e9ae7938-e4cf-4a28-932e-5b956436b53d
