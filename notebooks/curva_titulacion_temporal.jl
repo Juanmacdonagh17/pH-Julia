@@ -236,7 +236,13 @@ begin
 	end
 	xlabel!("Volumen de NaOH (ml)")
 	ylabel!("pH")
+	#Plotly.PlotConfig(toImageButtonOptions=attr(height=nothing, width=nothing).fields)
 end
+
+# ╔═╡ d4c22cc0-edb4-4e34-8f56-727d423ab1bc
+md"""
+Dentro del gráfico se puede encontrar un boton de descarga para guardarlo como .png usando el ícono de 📷, sumado a herramientas para hacer zoom en distintas zonas del gráfico! 
+"""
 
 # ╔═╡ fe6e663b-3444-4b0f-9b1f-b3694aaec3e5
 TableOfContents(title="Curva de titulación Ácido Base 🎢")
@@ -259,5 +265,6 @@ Desarrollado por Eduardo Gonik y Juan Mac Donagh. UNLP, Facultad de Ciencias Exa
 # ╟─36d23bf8-99ce-41f9-84d0-d59da6ab44b5
 # ╟─371acdab-ee5e-4adc-b373-87c3fe78e8af
 # ╟─e9ae7938-e4cf-4a28-932e-5b956436b53d
+# ╟─d4c22cc0-edb4-4e34-8f56-727d423ab1bc
 # ╟─fe6e663b-3444-4b0f-9b1f-b3694aaec3e5
 # ╟─4cd4972b-6886-4217-a4a8-42527f253e49
