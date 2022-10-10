@@ -226,9 +226,9 @@ md"""
 
 # ╔═╡ e9ae7938-e4cf-4a28-932e-5b956436b53d
 begin
-	p = scatter(vol_agregados,pH, legend=:false, size= (1000,600))
+	p = scatter(vol_agregados,pH, legend=:false, size= (1000,600), label = :false)
 	plot!(vol_agregados, pH, label=:false)
-	scatter!(punto_de_equivalencia.vol, punto_de_equivalencia.pH, markershape=:hexagon, markersize=12 ,markercolor=:green)
+	scatter!(punto_de_equivalencia.vol, punto_de_equivalencia.pH, markershape=:hexagon, markersize=12 ,markercolor=:green, label = :false)
 	indicador=Indicadores[ind]
 	if ind ≠ :Ninguno
 		hline!([indicador[:viraje][1]], color = indicador[:colores][1], width = 2)
