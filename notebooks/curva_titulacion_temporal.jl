@@ -162,17 +162,6 @@ $\begin{align}
 El pH se calcula a partir de vectorizar el uso de la función `pHfast` de la lib sobre $\mathbf{C_{base}}$ y $\mathbf{C_{acido}}$, en este caso representadas por las variables `conc_na_erlen` y `conc_ac_erlen`. El código redefine al NaOH con cada una de las concentraciónes contenidas en $\mathbf{C_{base}}$.
 
 
-```julia
-	pH=map(conc_na_erlen, conc_ac_erlen) do Cₙ,Cₜ
-		especie.conc=Cₜ
-		System(
-			Neutral(1, Cₙ), #Se define un 'objeto' Neutral, representando al NaOH
-			especie # La concentración del Ácido no cambia
-			especie
-		) |> s -> pHfast(s,.1)
-	end
-```
-
 \
 
 ### Punto de equivalencia
@@ -204,26 +193,6 @@ Ahora entonces el volumen es un vector, no un escalar.
 
 
 El pH se calcula de forma similar al caso anterior
-
-```julia
-
-		pH = map(1:times) do t  # t representaría cada uno de los componentes de *Chr*
-			println(t)
-			acido.conc = (conc_ac * vol_ac )/ (vol[t] + vol_ac) #a)
-			base=Neutral(1, t* ((conc_na*vol[t])/(vol[t] + vol_ac))  ) #b)
-			System(acido, base) |> s -> pHfast(s,.1)
-		end
-		(
-			vol=vol,
-		 	pH=pH
-		)
-	end
-end;
-#en a) y b) se tiene en cuenta la dilución.
-```
-
-
-
 
 """
 
@@ -285,8 +254,8 @@ end
 # ╟─4969064a-6f6d-11ec-1d9e-db3f5da90e7e
 # ╟─4de35c9b-29bb-4e62-88d0-3e426df2aea5
 # ╟─971751a5-b338-4e2a-80bd-c59e76ff3734
-# ╠═ca743222-5da5-46d3-bfcd-53fab31acd8c
-# ╠═5052e33a-687b-43e4-8437-b8fe392cea87
-# ╠═f56b3295-d66c-4fbd-ba83-4c54e9d6e871
-# ╠═36d23bf8-99ce-41f9-84d0-d59da6ab44b5
-# ╠═e9ae7938-e4cf-4a28-932e-5b956436b53d
+# ╟─ca743222-5da5-46d3-bfcd-53fab31acd8c
+# ╟─5052e33a-687b-43e4-8437-b8fe392cea87
+# ╟─f56b3295-d66c-4fbd-ba83-4c54e9d6e871
+# ╟─36d23bf8-99ce-41f9-84d0-d59da6ab44b5
+# ╟─e9ae7938-e4cf-4a28-932e-5b956436b53d
