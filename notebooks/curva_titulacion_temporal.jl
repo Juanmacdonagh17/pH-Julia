@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.17.4
+# v0.19.12
 
 using Markdown
 using InteractiveUtils
@@ -42,7 +42,7 @@ begin
 	""";
 	html"""<style>
 main {
-    max-width: 1500px;
+    max-width: 750px;
 }
 """
 end
