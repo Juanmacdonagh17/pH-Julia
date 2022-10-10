@@ -40,9 +40,17 @@ using Suppressor
 # ╔═╡ 971751a5-b338-4e2a-80bd-c59e76ff3734
 md"""
 
-# Curva de titulación
+# Curvas de titulación
 
 
+"""
+
+# ╔═╡ 8fa44710-71a7-41f5-b1e2-878ad4368b7f
+md"""
+En esta notebook podemos explorar los comportamientos de las curvas de titulación para distintos ácidos, con concentraciones variables, frente a Hidróxido de Sodio, también con concentración variable. 
+
+
+Sumado a esto, podemos analizar qué indicadores funcionan para determinar el punto de equivalencia de la misma, mediante un método gráfico.
 """
 
 # ╔═╡ 4de35c9b-29bb-4e62-88d0-3e426df2aea5
@@ -129,67 +137,41 @@ md"""
 
 ## Explicación teórica:
 
-Para la curva de titulación partimos de los siguientes parámetros:
+Para entender las curvas de pH podemos tratarlo como una funcion del volumen de Base:
+
+$$\text{pH} (\text{Vol}_{\ce{NaOH}})$$
+
+Si recordemos la definición de pH: 
+
+$$\text{pH}=-  \log{([H^+])}$$
+
+Podemos observar que, por cada gota de base que agregamos, modificamos la concentracion de protones por la siguiente reaccion: 
+
+$$\ce{H+ +OH- <=>H2O}$$
+
+Entonces, a tiempo $${0}$$ (cuando no hay ninguna gota de base), el pH inicial se calcula como: 
+
+$$\text{pH}_{V_0} = -\log{[H^+_i]}$$
 
 
-$V_{acido}, C_{acido}, C_{base}$
-
-Además de $V_{base}$ que se calcula como $3.\dfrac{C_{acido}.V_{acido}}{C_{base}}$
-
-A partir de eso se generan los siguientes vectores:
-
-$\begin{align}
-
-	\mathbf{V_{ag, base}} \rightarrow &  \ \{x \in  \mathbb{R} | 0 \leq x \leq V_{base} \}
-	
- \\
- \\
-
-	\mathbf{C_{base}} \rightarrow & \ \dfrac{C_{base} * \mathbf{V_{ag, base}} }{\mathbf{V_{ag, base}} + V_{acido} } 
-
-\\
-
-\\
+Pero al agregar la primer gota de Base, este se modifica de la siguiente manera:
 
 
-	\mathbf{C_{acido}} \rightarrow & \ \dfrac{C_{acido} * V_{acido} }{\mathbf{V_{ag, base}} + V_{acido} } 
-
-\end{align}$
-
-El pH se calcula a partir de vectorizar el uso de la función `pHfast` de la lib sobre $\mathbf{C_{base}}$ y $\mathbf{C_{acido}}$, en este caso representadas por las variables `conc_na_erlen` y `conc_ac_erlen`. El código redefine al NaOH con cada una de las concentraciónes contenidas en $\mathbf{C_{base}}$.
+$$\text{pH}_{V_1}=-\log{\Bigg(\dfrac{(\text{moles }H^{+}_{0}- \text{ moles }{OH}^-_{1})*(V_i+V_{1\text{NaOH}})}{1000\text{ml}}\Bigg)}$$
 
 
-\
+En esta ecuacion le restamos a los moles *iniciales* (en el punto anterior) debido a que modifican las concentraciones.
 
-### Punto de equivalencia:
+De forma general, podemos expresar la función de la siguiente manera:
 
-Para calcular el/los volumenes de punto de equivalencia se parte de:
+$$\text{pH}_{V_x}=-\log{\Bigg(\dfrac{(\text{moles }H^{+}_{x-1}-\text{moles }{OH}^-_{1})*(V_{x-1}+V_{x(\text{NaOH})})}{1000\text{ml}}\Bigg)}$$
 
-$$C_{acido}.V_{acido} = C_{base}.V_{base}$$
-$$\dfrac{C_{acido}.V_{acido}}{C_{base}} = V_{base}$$
+Con esto ya tenemos (casi) todo lo necesario para armar nuestra función. Los parametros a usar van a ser:\
 
-Luego, como podemos tener mas de un punto de equivalencia en caso de tener ácidos polipróticos, y sabemos que el volumen del segundo punto de equivalencia deberia corresponder al doble del primero y asi en adelante, definimos el siguiente vector:
+1) Concentración inicial del titulante
+2) Volumen de ácido 
+3) Concentración inicial de Ácido
 
-
-$\begin{align}
-
-	\mathbf{Chr} \rightarrow &  \ \{x \in  \mathbb{Z} | 1 \leq x \leq \ce{nH+} \},  \textbf{Chr}\text{ por }\textit{Charge}
-	
- \\
-
-
- 
- \\
-
-\mathbf{V_{base}} =& \dfrac{C_{acido}.V_{acido}.\mathbf{Chr} }{C_{base}}
-
-\end{align}$
-
-Ahora entonces el volumen es un vector, no un escalar.
-
-
-
-El pH se calcula de forma similar al caso anterior.
 
 """
 
@@ -252,7 +234,7 @@ begin
 		hline!([indicador[:viraje][1]], color = indicador[:colores][1], width = 2)
 		hline!([indicador[:viraje][2]], color = indicador[:colores][2], width = 2)
 	end
-	xlabel!("Volumen NaOH")
+	xlabel!("Volumen de NaOH (ml)")
 	ylabel!("pH")
 end
 
@@ -266,6 +248,7 @@ Desarrollado por Eduardo Gonik y Juan Mac Donagh. UNLP, Facultad de Ciencias Exa
 
 # ╔═╡ Cell order:
 # ╟─971751a5-b338-4e2a-80bd-c59e76ff3734
+# ╟─8fa44710-71a7-41f5-b1e2-878ad4368b7f
 # ╟─de7b7965-00e6-499d-8797-8588c4cda3ea
 # ╟─4969064a-6f6d-11ec-1d9e-db3f5da90e7e
 # ╟─4de35c9b-29bb-4e62-88d0-3e426df2aea5
