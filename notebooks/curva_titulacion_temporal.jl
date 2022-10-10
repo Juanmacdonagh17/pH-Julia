@@ -14,9 +14,11 @@ macro bind(def, element)
     end
 end
 
-# ╔═╡ 4969064a-6f6d-11ec-1d9e-db3f5da90e7e
+# ╔═╡ de7b7965-00e6-499d-8797-8588c4cda3ea
+using Suppressor 
 
-begin
+# ╔═╡ 4969064a-6f6d-11ec-1d9e-db3f5da90e7e
+@suppress begin
 	import Pkg
 	Pkg.activate(mktempdir())
 	Pkg.add([
@@ -279,8 +281,9 @@ begin
 end
 
 # ╔═╡ Cell order:
-# ╟─4969064a-6f6d-11ec-1d9e-db3f5da90e7e
-# ╟─4de35c9b-29bb-4e62-88d0-3e426df2aea5
+# ╠═de7b7965-00e6-499d-8797-8588c4cda3ea
+# ╠═4969064a-6f6d-11ec-1d9e-db3f5da90e7e
+# ╠═4de35c9b-29bb-4e62-88d0-3e426df2aea5
 # ╟─971751a5-b338-4e2a-80bd-c59e76ff3734
 # ╟─ca743222-5da5-46d3-bfcd-53fab31acd8c
 # ╟─5052e33a-687b-43e4-8437-b8fe392cea87
