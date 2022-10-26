@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.12
+# v0.19.13
 
 using Markdown
 using InteractiveUtils
@@ -103,6 +103,51 @@ Dict(
 	Dict(
 		:viraje=>[1.6,.2],
 		:colores=>[:blueviolet,:yellow]
+	),
+	"Azul de Timol"=>
+	Dict(
+		:viraje=>[1.2,2.8],
+		:colores=>[:red,:yellow]
+	),
+	"Indigo Carmín"=>
+	Dict(
+		:viraje=>[11.4,13],
+		:colores=>[:blue,:yellow]
+	),
+	"Azul de Bromotimol"=>
+	Dict(
+		:viraje=>[6.0,7.6],
+		:colores=>[:yellow,:blue]
+	),
+	"Heliantina"=>
+	Dict(
+		:viraje=>[4.4,3.1],
+		:colores=>[:red,:yellow]
+	),
+	"Púrpura de Bromocresol"=>
+	Dict(
+		:viraje=>[5.2,6.8],
+		:colores=>[:yellow,:violet]
+	),
+	"Rojo de Metilo"=>
+	Dict(
+		:viraje=>[4.2,6.3],
+		:colores=>[:red,:yellow]
+	),
+	"Verde de Bromocresol"=>
+	Dict(
+		:viraje=>[3.8,5.4],
+		:colores=>[:yellow,:green]
+	),
+	"Rojo Neutro"=>
+	Dict(
+		:viraje=>[6.8,8.4],
+		:colores=>[:red,:yellow]
+	),
+	"Timolftaleina"=>
+	Dict(
+		:viraje=>[9.3,10.5],
+		:colores=>[:white,:blue]
 	),
 		:Ninguno=>Nothing
 )
@@ -263,7 +308,7 @@ Desarrollado por Eduardo Gonik y Juan Mac Donagh. UNLP, Facultad de Ciencias Exa
 # ╟─de7b7965-00e6-499d-8797-8588c4cda3ea
 # ╟─4969064a-6f6d-11ec-1d9e-db3f5da90e7e
 # ╟─4de35c9b-29bb-4e62-88d0-3e426df2aea5
-# ╟─ca743222-5da5-46d3-bfcd-53fab31acd8c
+# ╠═ca743222-5da5-46d3-bfcd-53fab31acd8c
 # ╟─5052e33a-687b-43e4-8437-b8fe392cea87
 # ╟─a181e191-ec53-49f3-b122-87aa80a73074
 # ╟─f56b3295-d66c-4fbd-ba83-4c54e9d6e871
