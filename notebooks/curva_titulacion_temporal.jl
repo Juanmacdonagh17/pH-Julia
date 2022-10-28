@@ -14,24 +14,14 @@ macro bind(def, element)
     end
 end
 
+# ╔═╡ ac0974f9-449d-47eb-9496-997e8dab6435
+using Suppressor
+
 # ╔═╡ 4969064a-6f6d-11ec-1d9e-db3f5da90e7e
-begin
-	# Pkg.activate(mktempdir())
-	# Pkg.add([
-	#     Pkg.PackageSpec(name="Plots", version="1"),
-	#     Pkg.PackageSpec(name="PlutoUI", version="0.7"),
-	#     Pkg.PackageSpec(name="Optim"),
-	#     Pkg.PackageSpec(name="LaTeXStrings"),
-	#     Pkg.PackageSpec(name="Unitful"),
-	#     Pkg.PackageSpec(name="DataFrames"),
-	# 	 Pkg.PackageSpec(name="Statistics"),
-	# 	Pkg.PackageSpec(name="PHcalc"),
-	# 	Pkg.PackageSpec(name="OrderedCollections")
-	#     ])
-	    
-	using Plots, Statistics, PlutoUI, LaTeXStrings, Optim, DataFrames, PHcalc, OrderedCollections, Suppressor
+@suppress begin
+	using Plots, Statistics, PlutoUI, LaTeXStrings, Optim, DataFrames, PHcalc, OrderedCollections
 	plotly()
-    end;
+end;
 
 # ╔═╡ 971751a5-b338-4e2a-80bd-c59e76ff3734
 md"""
@@ -240,6 +230,9 @@ Volumen de ácido a titular (ml): $(@bind vol_ac Slider(5:20, default = 10, show
 Concentración molar del Ácido (M): $(@bind conc_ac Slider(LinRange(.1,.5,50), show_value = true);)\
 \
 
+Volumen de agua agregado en el erlen (ml): $(@bind volumen_agua_erlen Slider(collect(0:1:30), default=0.1, show_value=true);)\
+
+
 Indicador: $(@bind ind Select(collect(keys(Indicadores))))
 
 """
@@ -249,9 +242,9 @@ begin
 	especie=especies[esp] 
 	resolucion=200
 	vol_na= 3*(conc_ac*vol_ac)/conc_na
-	vol_agregados=LinRange(0,vol_na + 10, resolucion)
-	conc_na_erlen=(conc_na*vol_agregados)./(vol_agregados.+vol_ac)
-	conc_ac_erlen=(conc_ac*vol_ac)./(vol_agregados.+vol_ac)
+	vol_agregados=  LinRange(0,vol_na + 10, resolucion)
+	conc_na_erlen=(conc_na*vol_agregados)./(vol_agregados.+vol_ac .+ volumen_agua_erlen)
+	conc_ac_erlen=(conc_ac*vol_ac)./(vol_agregados.+vol_ac .+ volumen_agua_erlen)
 	especie.conc=conc_ac
 	punto_de_equivalencia=pde(especie,conc_na ,vol_ac)
 	
@@ -337,7 +330,7 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.8.0"
 manifest_format = "2.0"
-project_hash = "0d668fec598cbff80b415e5e3e28e053eb665bef"
+project_hash = "0eb36ece945e93300cdf57c989b33d19e0e0316f"
 
 [[deps.AbstractPlutoDingetjes]]
 deps = ["Pkg"]
@@ -1475,6 +1468,7 @@ version = "1.4.1+0"
 """
 
 # ╔═╡ Cell order:
+# ╟─ac0974f9-449d-47eb-9496-997e8dab6435
 # ╟─971751a5-b338-4e2a-80bd-c59e76ff3734
 # ╟─8fa44710-71a7-41f5-b1e2-878ad4368b7f
 # ╟─4969064a-6f6d-11ec-1d9e-db3f5da90e7e
