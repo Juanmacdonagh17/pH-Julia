@@ -42,38 +42,20 @@ end
 plantilla[:acetico]
 
 # ╔═╡ c923d4c7-4f7f-4134-b034-1405ee4a74fe
-begin
-	typ = eval(plantilla[:data][:cat])
-	typ([7.52e-3,6.23e-8,4.8e-13],.01,0)
+function get_sust(sust, plantilla)
+	plantilla[sust]
 end
+
 
 # ╔═╡ 8ddd74dc-4ee2-47ee-a579-26c0f54e7e46
 JSON.json(plantilla) |> typeof
 
 # ╔═╡ 16f86546-e061-4190-9dda-ab0b9718557e
-	macro parse_types( dict )
-		quote 
+	macro parse_types( dict ) 
 			dict2 = deepcopy(eval(dict))
 			typ = eval(pop!(dict2, :cat))
-			typ(values(dict2)...)
-		end
+			esc(typ(values(dict2)...))
 	end
-
-# ╔═╡ 990b0f16-10f7-4b98-a63a-3840c2a8cdcb
-get_sust(:acetico)
-
-# ╔═╡ 5adf00a9-adff-4da2-bb09-c3896b198c8b
-begin
-	begin
-		@macroexpand  @parse_types plantilla[:acetico] 
-	end
-end
-
-# ╔═╡ 2026e17a-a5d9-45ad-b167-a73c590e61ff
-@parse_types plantilla[:acetico]
-
-# ╔═╡ a05ebc8c-685d-47db-8034-89be04d858e7
-
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -94,7 +76,7 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.8.0"
 manifest_format = "2.0"
-project_hash = "edd5dc4cabebb94266b7406aa57a9a926f7c4f6e"
+project_hash = "fd83dd9e83ec3a81ce0a5bfcc80313922a57098e"
 
 [[deps.ArgTools]]
 uuid = "0dad84c5-d112-42e6-8d28-ef12dabb789f"
@@ -523,9 +505,5 @@ version = "17.4.0+0"
 # ╠═c923d4c7-4f7f-4134-b034-1405ee4a74fe
 # ╠═8ddd74dc-4ee2-47ee-a579-26c0f54e7e46
 # ╠═16f86546-e061-4190-9dda-ab0b9718557e
-# ╠═990b0f16-10f7-4b98-a63a-3840c2a8cdcb
-# ╠═5adf00a9-adff-4da2-bb09-c3896b198c8b
-# ╠═2026e17a-a5d9-45ad-b167-a73c590e61ff
-# ╠═a05ebc8c-685d-47db-8034-89be04d858e7
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
