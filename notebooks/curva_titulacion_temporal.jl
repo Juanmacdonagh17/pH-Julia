@@ -39,6 +39,9 @@ En esta notebook podemos explorar los comportamientos de las curvas de titulaci�
 Sumado a esto, podemos analizar qué indicadores funcionan para determinar el punto de equivalencia de la misma, mediante un método gráfico.
 """
 
+# ╔═╡ a9187d60-f60b-4437-8e9e-f6762c8db40c
+
+
 # ╔═╡ 4de35c9b-29bb-4e62-88d0-3e426df2aea5
 begin
 	md"""
@@ -1472,8 +1475,9 @@ version = "1.4.1+0"
 # ╟─971751a5-b338-4e2a-80bd-c59e76ff3734
 # ╟─8fa44710-71a7-41f5-b1e2-878ad4368b7f
 # ╟─4969064a-6f6d-11ec-1d9e-db3f5da90e7e
-# ╟─4de35c9b-29bb-4e62-88d0-3e426df2aea5
-# ╟─ca743222-5da5-46d3-bfcd-53fab31acd8c
+# ╠═a9187d60-f60b-4437-8e9e-f6762c8db40c
+# ╠═4de35c9b-29bb-4e62-88d0-3e426df2aea5
+# ╠═ca743222-5da5-46d3-bfcd-53fab31acd8c
 # ╟─5052e33a-687b-43e4-8437-b8fe392cea87
 # ╟─a181e191-ec53-49f3-b122-87aa80a73074
 # ╟─f56b3295-d66c-4fbd-ba83-4c54e9d6e871

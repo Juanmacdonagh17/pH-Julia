@@ -41,21 +41,25 @@ end
 # ╔═╡ cebcc154-68f7-4d55-9a31-b2035c7f28b5
 plantilla[:acetico]
 
-# ╔═╡ c923d4c7-4f7f-4134-b034-1405ee4a74fe
-function get_sust(sust, plantilla)
-	plantilla[sust]
-end
-
-
-# ╔═╡ 8ddd74dc-4ee2-47ee-a579-26c0f54e7e46
-JSON.json(plantilla) |> typeof
-
 # ╔═╡ 16f86546-e061-4190-9dda-ab0b9718557e
 	macro parse_types( dict ) 
 			dict2 = deepcopy(eval(dict))
 			typ = eval(pop!(dict2, :cat))
 			esc(typ(values(dict2)...))
 	end
+
+# ╔═╡ c923d4c7-4f7f-4134-b034-1405ee4a74fe
+function get_sust(sust, plantilla)
+	t = plantilla[sust]
+	# @parse_types t  
+end
+
+
+# ╔═╡ 8ddd74dc-4ee2-47ee-a579-26c0f54e7e46
+JSON.json(plantilla) |> typeof
+
+# ╔═╡ 220a0948-0cd6-4e85-89ec-fe84f8d89cee
+get_sust(:acetico,plantilla)
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -502,8 +506,9 @@ version = "17.4.0+0"
 # ╠═25b9d708-5944-11ed-0a43-3ffad015390f
 # ╠═cd917fd1-fa47-43f0-8a63-9f22035296d7
 # ╠═cebcc154-68f7-4d55-9a31-b2035c7f28b5
+# ╠═16f86546-e061-4190-9dda-ab0b9718557e
 # ╠═c923d4c7-4f7f-4134-b034-1405ee4a74fe
 # ╠═8ddd74dc-4ee2-47ee-a579-26c0f54e7e46
-# ╠═16f86546-e061-4190-9dda-ab0b9718557e
+# ╠═220a0948-0cd6-4e85-89ec-fe84f8d89cee
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
