@@ -32,13 +32,13 @@ services:
     expose:
       - "80"
     environment:
-      - VIRTUAL_HOST=phfunhouse.com.ar,www.phfunhouse.com.ar
-      - LETSENCRYPT_HOST=phfunhouse.com.ar,www.phfunhouse.com.ar
+      - VIRTUAL_HOST=phfunhouse.com.ar
+      - LETSENCRYPT_HOST=phfunhouse.com.ar
       - LETSENCRYPT_EMAIL=gonik@quimica.unlp.edu.ar
-    depends_on:
+
+    depends_on: 
       - nginx-proxy
       - letsencrypt
-
 
 volumes: 
   certs:
