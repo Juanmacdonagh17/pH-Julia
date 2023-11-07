@@ -32,44 +32,12 @@ services:
     expose:
       - "80"
     environment:
-      - VIRTUAL_HOST=phfh.tk,www.phfh.tk
-      - LETSENCRYPT_HOST=phfh.tk,www.phfh.tk
+      - VIRTUAL_HOST=phfunhouse.com.ar,www.phfunhouse.com.ar
+      - LETSENCRYPT_HOST=phfunhouse.com.ar,www.phfunhouse.com.ar
       - LETSENCRYPT_EMAIL=gonik@quimica.unlp.edu.ar
     depends_on:
       - nginx-proxy
       - letsencrypt
-  tstu:
-    image: nginx
-    restart: unless-stopped
-    expose:
-      - "80"
-    volumes:
-      - /home/eduardogonik/pH-Julia/html:/usr/share/nginx/html:ro
-
-    environment:
-      - VIRTUAL_HOST=phfunhouse.ml,www.phfunhouse.ml
-      - LETSENCRYPT_HOST=phfunhouse.ml,www.phfunhouse.ml
-      - LETSENCRYPT_EMAIL=gonik@quimica.unlp.edu.ar
-    depends_on:
-      - nginx-proxy
-      - letsencrypt
-  
-  tstu2:
-    image: nginx
-    restart: unless-stopped
-    expose:
-      - "80"
-    volumes:
-      - /home/eduardogonik/pH-Julia/html:/usr/share/nginx/html:ro
-
-    environment:
-      - VIRTUAL_HOST=tst.phfunhouse.ml,www.tst.phfunhouse.ml
-    depends_on:
-      - nginx-proxy
-      - letsencrypt
-
-
-
 
 
 volumes: 
