@@ -68,13 +68,17 @@ begin
 	fosforico=Acid([7.52e-3,6.23e-8,4.8e-13],.01,0)
 	acetico=Acid(1.8e-5,.001,0)
 	clorhidrico=Neutral(-1,1e-8)
+	fluorhidrico=Acid(6.6e-4, 0.001, 0)
+	cianhidrico=Acid(4.9e-10, 0.001, 0)
 	aspartico=Acid((x-> 10^-x).([2.09,9.82,3.86]),0.06, 1)
 	sistema=System(clorhidrico)
 	especies=Dict(
 		:Aspártico=>aspartico,
 		:Fosfórico=>fosforico,
 		:Acético=>acetico,
-		:Clorhídrico=>clorhidrico
+		:Clorhídrico=>clorhidrico,
+		:Cianhidrico=>cianhidrico,
+		:Fluorhidrico => fluorhidrico
 	);
 	Indicadores=OrderedDict(
 	"Fenolftaleína"=>
@@ -83,6 +87,11 @@ Dict(
 		:colores=>[:pink,:whitesmoke]
 ),
 	"Naranja de metilo"=>
+	Dict(
+		:viraje=>[4.4,3.1],
+		:colores=>[:red,:yellow]
+	),
+		"Heliantina"=>
 	Dict(
 		:viraje=>[4.4,3.1],
 		:colores=>[:red,:yellow]
@@ -96,6 +105,11 @@ Dict(
 	Dict(
 		:viraje=>[8.8,7],
 		:colores=>[:yellow,:red]
+	),
+	"Timolftaleina"=>
+	Dict(
+		:viraje=>[10.5,9.3],
+		:colores=>[:blue,:whitesmoke]
 	),
 	"Violeta de metilo"=>
 	Dict(
