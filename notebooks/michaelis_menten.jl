@@ -14,14 +14,42 @@ macro bind(def, element)
     end
 end
 
-# ╔═╡ 94b07c62-7f41-11ee-03b2-f3dfd565fb86
-using Plots , PlutoUI
+# ╔═╡ df29c3f7-a796-4c51-8d26-dae71e2a3869
+begin
+		using Suppressor
+md"""
+
+# Curvas interactivas de Michaelis-Menten 🍤
+
+
+"""
+end
+
+# ╔═╡ c1c2ee13-e1c4-46e4-9094-2a0f277cb9b4
+begin
+	@suppress begin
+		using Plots, PlutoUI
+		gr()
+	end;
+end;
 
 # ╔═╡ d75b9927-8f62-4a80-8465-c93f6a72e25e
 function michaelis_menten(vmax, km, s)
     return (vmax * s) / (km + s)
-end
+end;
 
+# ╔═╡ f953b867-2661-49ee-aec8-674a1ae07181
+md"""
+Podemos explorar la ecuación de Michaelis-Menten:
+
+$v=\frac{\mathrm{d} p}{\mathrm{~d} t}=\frac{V a}{K_{\mathrm{m}}+a}$
+
+"""
+
+# ╔═╡ b7983948-71ca-4a23-8a87-d10e4d20561e
+md"""
+ Definiendo los parametros de Vmax, V, Km y máximo rango de [S] a graficar:
+"""
 
 # ╔═╡ 3a2fabfc-4f94-4f05-9d15-3f3b6e635a9e
 md"""
@@ -32,21 +60,47 @@ V: $(@bind v Slider(1:vmax, default=vmax/2, show_value=true);)\
 
 Km: $(@bind km Slider(1:100, default=10, show_value=true);)\
 
-Max [S] range: $(@bind s_range_max NumberField(1:1000, default=100);)\
+Max [S]: $(@bind s_range_max NumberField(1:1000, default=100);)\
+"""
+
+# ╔═╡ da2255b1-0bcc-4813-bbf7-0d29055aadfd
+md"""
+#
 """
 
 # ╔═╡ 300756a9-21cd-42cd-a833-0a725b5b7094
-plot(1:s_range_max, s -> michaelis_menten(v, km, s), label="Michaelis-Menten Curve", xlabel="Substrate Concentration [S]", ylabel="Reaction Rate [v]");hline!([vmax], label="Vmax");plot!(size=(750,750))
+plot(1:s_range_max, s -> michaelis_menten(v, km, s), label="Curva de MM", xlabel="[S]", ylabel="V");hline!([vmax], label="Vmax");plot!(size=(750,750))
+
+# ╔═╡ 2c0eb34a-09cb-49d3-b22f-dec433a0d948
+md"""
+#
+"""
+
+# ╔═╡ 9969812a-5c43-43f3-89ac-d41dd1fa3b97
+md"""
+Desarrollado por Eduardo Gonik y Juan Mac Donagh. UNLP, Facultad de Ciencias Exactas, 2023.
+"""
+
+# ╔═╡ dbad60f3-e143-47de-8369-76c6afc8c76f
+md"""
+En caso de encontrar errores o tener dudas:
+
+
+Enviar correo: 
+[Colo](mailto:\\eduardogonik@gmail.com), [Juan](mailto:\\macjuan17@gmail.com)
+""" 
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
 [deps]
 Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
+Suppressor = "fd094767-a336-5f1f-9728-57cf17d0bbfb"
 
 [compat]
 Plots = "~1.39.0"
 PlutoUI = "~0.7.53"
+Suppressor = "~0.2.6"
 """
 
 # ╔═╡ 00000000-0000-0000-0000-000000000002
@@ -55,7 +109,7 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.9.2"
 manifest_format = "2.0"
-project_hash = "5a9d83d05e9e46e1b1f6732510f61c9b27430384"
+project_hash = "8e9de5e93f27866f918ebf4bc2ca77dd4765da16"
 
 [[deps.AbstractPlutoDingetjes]]
 deps = ["Pkg"]
@@ -769,6 +823,12 @@ deps = ["Artifacts", "Libdl", "Pkg", "libblastrampoline_jll"]
 uuid = "bea87d4a-7f5b-5778-9afe-8cc45184846c"
 version = "5.10.1+6"
 
+[[deps.Suppressor]]
+deps = ["Logging"]
+git-tree-sha1 = "6cd9e4a207964c07bf6395beff7a1e8f21d0f3b2"
+uuid = "fd094767-a336-5f1f-9728-57cf17d0bbfb"
+version = "0.2.6"
+
 [[deps.TOML]]
 deps = ["Dates"]
 uuid = "fa267f1f-6049-4f14-aa54-33bafae1ed76"
@@ -1138,9 +1198,16 @@ version = "1.4.1+1"
 """
 
 # ╔═╡ Cell order:
-# ╠═94b07c62-7f41-11ee-03b2-f3dfd565fb86
-# ╠═d75b9927-8f62-4a80-8465-c93f6a72e25e
+# ╟─df29c3f7-a796-4c51-8d26-dae71e2a3869
+# ╟─c1c2ee13-e1c4-46e4-9094-2a0f277cb9b4
+# ╟─d75b9927-8f62-4a80-8465-c93f6a72e25e
+# ╟─f953b867-2661-49ee-aec8-674a1ae07181
+# ╟─b7983948-71ca-4a23-8a87-d10e4d20561e
 # ╟─3a2fabfc-4f94-4f05-9d15-3f3b6e635a9e
+# ╟─da2255b1-0bcc-4813-bbf7-0d29055aadfd
 # ╟─300756a9-21cd-42cd-a833-0a725b5b7094
+# ╟─2c0eb34a-09cb-49d3-b22f-dec433a0d948
+# ╟─9969812a-5c43-43f3-89ac-d41dd1fa3b97
+# ╟─dbad60f3-e143-47de-8369-76c6afc8c76f
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
