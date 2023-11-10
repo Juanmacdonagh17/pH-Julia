@@ -83,11 +83,11 @@ Desarrollado por Eduardo Gonik y Juan Mac Donagh. UNLP, Facultad de Ciencias Exa
 
 # ╔═╡ dbad60f3-e143-47de-8369-76c6afc8c76f
 md"""
-En caso de encontrar errores o tener dudas:
+En caso de encontrar errores o tener dudas o saber algo de la vida y todo el resto.
 
 
 Enviar correo: 
-[Colo](mailto:\\eduardogonik@gmail.com), [Juan](mailto:\\macjuan17@gmail.com)
+[Colo](mailto:eduardogonik@gmail.com) (eduardogonik@gmail.com), [Juan](mailto:macjuan17@gmail.com) (macjuan17@gmail.com)
 """ 
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
