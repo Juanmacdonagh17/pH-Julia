@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.28
+# v0.19.32
 
 using Markdown
 using InteractiveUtils
@@ -110,7 +110,7 @@ Suppressor = "~0.2.6"
 PLUTO_MANIFEST_TOML_CONTENTS = """
 # This file is machine-generated - editing it directly is not advised
 
-julia_version = "1.9.3"
+julia_version = "1.9.2"
 manifest_format = "2.0"
 project_hash = "27eae31427d4eafc9a0303281c6a2ec99600bea6"
 
@@ -1206,9 +1206,15 @@ version = "1.4.1+1"
 # ╟─d75b9927-8f62-4a80-8465-c93f6a72e25e
 # ╟─f953b867-2661-49ee-aec8-674a1ae07181
 # ╟─b7983948-71ca-4a23-8a87-d10e4d20561e
+<<<<<<< Updated upstream
 # ╟─3a2fabfc-4f94-4f05-9d15-3f3b6e635a9e
 # ╟─da2255b1-0bcc-4813-bbf7-0d29055aadfd
 # ╟─300756a9-21cd-42cd-a833-0a725b5b7094
+=======
+# ╠═3a2fabfc-4f94-4f05-9d15-3f3b6e635a9e
+# ╟─da2255b1-0bcc-4813-bbf7-0d29055aadfd
+# ╠═300756a9-21cd-42cd-a833-0a725b5b7094
+>>>>>>> Stashed changes
 # ╟─2c0eb34a-09cb-49d3-b22f-dec433a0d948
 # ╟─9969812a-5c43-43f3-89ac-d41dd1fa3b97
 # ╟─dbad60f3-e143-47de-8369-76c6afc8c76f
